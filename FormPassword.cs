@@ -21,24 +21,25 @@ namespace Arbeidskrav_1
         {
             if (e.KeyChar == 13)
             {
-                FormMain.cancel = false;
                 e.Handled = true;
-                FormMain.configPassword = textBoxPassword.Text;
-                this.Close();
-                
+                buttonPassword_Click(sender, e);
             }
         }
 
         private void buttonPassword_Click(object sender, EventArgs e)
         {
+           
             FormMain.cancel = false;
             FormMain.configPassword = textBoxPassword.Text;
-            this.Close();
-            
+            if (textBoxPassword.Text.Length >= 8)
+                this.Close();
+            else
+                MessageBox.Show(this,"Password Too Short (Minimum 8 characters)","Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)
-        {
+        {   
             FormMain.cancel = true;
         }
     }

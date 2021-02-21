@@ -117,4 +117,25 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <metadata name="openFileDialog1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        AAABAAEAICAQAAAABADoAgAAFgAAACgAAAAgAAAAQAAAAAEABAAAAAAAAAIAAAAAAAAAAAAAEAAAABAA
+        AAAAAAAAAACAAACAAAAAgIAAgAAAAIAAgACAgAAAgICAAMDAwAAAAP8AAP8AAAD//wD/AAAA/wD/AP//
+        AAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALAAAAAACwAAAAAAAAAAAAuwAAAAAAuwAAAAAAAA
+        AAC7sAAAAAALuwAAAAAAAAALu7AAAAAAC7uwAAAAAAAAu7uwAAAAAAu7uwAAAAAAC7u7sAAAAAALu7uw
+        AAAAALu7u7AAAAAAC7u7uwAAAAu7u7u7u7u7u7u7u7uwAAC7u7u7u7u7u7u7u7u7uwAAC7u7u7u7u7u7
+        u7u7u7AAAAC7u7uwAAAAAAu7u7sAAAAAC7u7sAAAAAALu7uwAAAAAAC7u7AAAAAAC7u7AAAAAAAAC7uw
+        AAAAAAu7sAAAAAAAAAC7sAAAAAALuwAAAAAAAAAAC7AAAAAAC7AAAAAAAAAAAACwAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//////////////////////8/z//+P
+        8f//D/D//g/wf/wP8D/4D/Af8A/wD+AAAAfAAAADgAAAAcAAAAPgAAAH8A/wD/gP8B/8D/A//g/wf/8P
+        8P/BgPB/nM5zP5zOZ7/8/mf/8fjn/8fj5/+fz+f/nM5nv5zOcz/B4Ph//////w==
+</value>
+  </data>
 </root>

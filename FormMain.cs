@@ -43,7 +43,7 @@ namespace Arbeidskrav_1
         int pointXValueScaled = 0;
         public static string configPassword = "";
         public static bool cancel = false;
-
+       
 
         //Disconnects serial port
         //Enables and disables bool values accordingly.
@@ -308,7 +308,7 @@ namespace Arbeidskrav_1
             }
         }
 
-        //Disconnects and closes program from strip menu 
+        //Closes program from strip menu 
         private void toolStripMenuItemExit_Click(object sender, EventArgs e)
         {
             this.Close();
@@ -405,7 +405,7 @@ namespace Arbeidskrav_1
             {
                 comboBoxComPort.Items.Add(item);
             }
-            if (comPorts.Length > 0)
+            if (comPorts.Length > 0 && comboBoxComPort.SelectedIndex < 0)
             {
                 comboBoxComPort.Text = comboBoxComPort.GetItemText(comPorts[0]);
             }
@@ -868,37 +868,22 @@ namespace Arbeidskrav_1
         //Prevents user from closing program by accident
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
         {
-
-            string message = "Are you sure you want to close the program?";
-            string caption = "Exit Confirmation";
-            MessageBoxButtons buttons = MessageBoxButtons.YesNo;
-            MessageBoxIcon icon = MessageBoxIcon.Question;
-            DialogResult result;
             if (monitorStart)
             {
-                buttons = MessageBoxButtons.YesNoCancel;
-                message = "You are monitoring do you want to Save and Exit?";
-                caption = "Exit Confirmation";
-            }
-            else
-            {
-                message = "Are you sure you want to close the program?";
-                caption = "Exit Confirmation";
-            }
-            result = MessageBox.Show(this, message, caption, buttons, icon);
-            if (result == DialogResult.Cancel)
-            {
-                e.Cancel = true;
+                string message = "You are monitoring do you want to Save and Exit?";
+                string caption = "Exit Confirmation";
 
-            }
-            else if (result == DialogResult.No && !monitorStart)
-            {
-                e.Cancel = true;
-            }
-            else if (result == DialogResult.Yes && monitorStart)
-            {
-                dataSave();
-                e.Cancel = false;
+                DialogResult result = MessageBox.Show(this, message, caption, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+
+                if (result == DialogResult.Cancel)
+                {
+                    e.Cancel = true;
+                }
+                else if (result == DialogResult.Yes)
+                {
+                    dataSave();
+                    e.Cancel = false;
+                }
             }
         }
 
@@ -982,6 +967,12 @@ namespace Arbeidskrav_1
             string dataType = "Scaled";
             if (checkBoxSignalRaw.Checked) dataType = "Raw";
             toolTip1.SetToolTip(buttonSaveData, "Save " + dataType + " Data");
+        }
+
+        private void toolStripMenuItemDefaultConfig_Click(object sender, EventArgs e)
+        {
+            DefaultConfigSettings defaultConfigWindow = new DefaultConfigSettings();
+            defaultConfigWindow.Show(this);
         }
     }      
 }
