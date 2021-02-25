@@ -111,6 +111,9 @@ namespace Arbeidskrav_1
             this.timerSend = new System.Windows.Forms.Timer(this.components);
             this.timerReceive = new System.Windows.Forms.Timer(this.components);
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.toolStripStatusLabelMonitoring = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabelMStaus = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabelConnection = new System.Windows.Forms.ToolStripStatusLabel();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -149,28 +152,28 @@ namespace Arbeidskrav_1
             // toolStripMenuItemOpen
             // 
             this.toolStripMenuItemOpen.Name = "toolStripMenuItemOpen";
-            this.toolStripMenuItemOpen.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItemOpen.Size = new System.Drawing.Size(162, 22);
             this.toolStripMenuItemOpen.Text = "&Load Config";
             this.toolStripMenuItemOpen.Click += new System.EventHandler(this.toolStripMenuItemOpen_Click);
             // 
             // toolStripMenuItemSave
             // 
             this.toolStripMenuItemSave.Name = "toolStripMenuItemSave";
-            this.toolStripMenuItemSave.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItemSave.Size = new System.Drawing.Size(162, 22);
             this.toolStripMenuItemSave.Text = "&Save Config";
             this.toolStripMenuItemSave.Click += new System.EventHandler(this.toolStripMenuItemSave_Click);
             // 
             // toolStripMenuItemSaveAs
             // 
             this.toolStripMenuItemSaveAs.Name = "toolStripMenuItemSaveAs";
-            this.toolStripMenuItemSaveAs.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItemSaveAs.Size = new System.Drawing.Size(162, 22);
             this.toolStripMenuItemSaveAs.Text = "Save Config &As...";
             this.toolStripMenuItemSaveAs.Click += new System.EventHandler(this.toolStripMenuItemSaveAs_Click);
             // 
             // toolStripMenuItemExit
             // 
             this.toolStripMenuItemExit.Name = "toolStripMenuItemExit";
-            this.toolStripMenuItemExit.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItemExit.Size = new System.Drawing.Size(162, 22);
             this.toolStripMenuItemExit.Text = "E&xit";
             this.toolStripMenuItemExit.Click += new System.EventHandler(this.toolStripMenuItemExit_Click);
             // 
@@ -208,7 +211,10 @@ namespace Arbeidskrav_1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel1,
-            this.toolStripProgressBarConnection});
+            this.toolStripStatusLabelConnection,
+            this.toolStripProgressBarConnection,
+            this.toolStripStatusLabelMonitoring,
+            this.toolStripStatusLabelMStaus});
             this.statusStrip1.Location = new System.Drawing.Point(0, 431);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(800, 22);
@@ -218,8 +224,8 @@ namespace Arbeidskrav_1
             // toolStripStatusLabel1
             // 
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(148, 17);
-            this.toolStripStatusLabel1.Text = "COM Status: Disconnected";
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(73, 17);
+            this.toolStripStatusLabel1.Text = "COM Status:";
             // 
             // toolStripProgressBarConnection
             // 
@@ -656,7 +662,7 @@ namespace Arbeidskrav_1
             this.chartScaled.Enabled = false;
             legend1.Name = "Legend1";
             this.chartScaled.Legends.Add(legend1);
-            this.chartScaled.Location = new System.Drawing.Point(165, 15);
+            this.chartScaled.Location = new System.Drawing.Point(130, 3);
             this.chartScaled.Name = "chartScaled";
             series1.ChartArea = "ChartArea1";
             series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
@@ -664,7 +670,7 @@ namespace Arbeidskrav_1
             series1.LegendText = "Scaled";
             series1.Name = "Scaled";
             this.chartScaled.Series.Add(series1);
-            this.chartScaled.Size = new System.Drawing.Size(619, 343);
+            this.chartScaled.Size = new System.Drawing.Size(666, 378);
             this.chartScaled.TabIndex = 15;
             this.chartScaled.TabStop = false;
             this.chartScaled.Text = "chart2";
@@ -757,6 +763,7 @@ namespace Arbeidskrav_1
             this.textBoxSensorData.Multiline = true;
             this.textBoxSensorData.Name = "textBoxSensorData";
             this.textBoxSensorData.ReadOnly = true;
+            this.textBoxSensorData.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textBoxSensorData.Size = new System.Drawing.Size(116, 47);
             this.textBoxSensorData.TabIndex = 4;
             this.textBoxSensorData.TabStop = false;
@@ -800,12 +807,12 @@ namespace Arbeidskrav_1
             // chartRaw
             // 
             chartArea2.AxisX.Title = "Time";
-            chartArea2.AxisY.Title = "Volt";
+            chartArea2.AxisY.Title = "Raw Data";
             chartArea2.Name = "ChartArea1";
             this.chartRaw.ChartAreas.Add(chartArea2);
             legend2.Name = "Legend1";
             this.chartRaw.Legends.Add(legend2);
-            this.chartRaw.Location = new System.Drawing.Point(165, 12);
+            this.chartRaw.Location = new System.Drawing.Point(130, 3);
             this.chartRaw.Name = "chartRaw";
             series2.ChartArea = "ChartArea1";
             series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
@@ -818,7 +825,7 @@ namespace Arbeidskrav_1
             series3.Name = "Scaled";
             this.chartRaw.Series.Add(series2);
             this.chartRaw.Series.Add(series3);
-            this.chartRaw.Size = new System.Drawing.Size(619, 343);
+            this.chartRaw.Size = new System.Drawing.Size(662, 378);
             this.chartRaw.TabIndex = 0;
             this.chartRaw.TabStop = false;
             this.chartRaw.Text = "chart1";
@@ -841,6 +848,27 @@ namespace Arbeidskrav_1
             // 
             this.timerReceive.Interval = 700;
             this.timerReceive.Tick += new System.EventHandler(this.timerReceive_Tick);
+            // 
+            // toolStripStatusLabelMonitoring
+            // 
+            this.toolStripStatusLabelMonitoring.ForeColor = System.Drawing.SystemColors.InactiveCaptionText;
+            this.toolStripStatusLabelMonitoring.Name = "toolStripStatusLabelMonitoring";
+            this.toolStripStatusLabelMonitoring.Size = new System.Drawing.Size(129, 17);
+            this.toolStripStatusLabelMonitoring.Text = "        Monitoring Status:";
+            this.toolStripStatusLabelMonitoring.Visible = false;
+            // 
+            // toolStripStatusLabelMStaus
+            // 
+            this.toolStripStatusLabelMStaus.Name = "toolStripStatusLabelMStaus";
+            this.toolStripStatusLabelMStaus.Size = new System.Drawing.Size(32, 17);
+            this.toolStripStatusLabelMStaus.Text = "_____";
+            this.toolStripStatusLabelMStaus.Visible = false;
+            // 
+            // toolStripStatusLabelConnection
+            // 
+            this.toolStripStatusLabelConnection.Name = "toolStripStatusLabelConnection";
+            this.toolStripStatusLabelConnection.Size = new System.Drawing.Size(79, 17);
+            this.toolStripStatusLabelConnection.Text = "Disconnected";
             // 
             // FormMain
             // 
@@ -953,6 +981,9 @@ namespace Arbeidskrav_1
         private System.Windows.Forms.Button buttonSaveData;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemSettings;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemDefaultConfig;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelMonitoring;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelMStaus;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelConnection;
     }
 }
 

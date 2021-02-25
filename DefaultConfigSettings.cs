@@ -235,6 +235,8 @@ namespace Arbeidskrav_1
                 textBoxCURV.Text = textBoxURV.Text;
                 textBoxCAlarmL.Text = textBoxAlarmL.Text;
                 textBoxCAlarmH.Text = textBoxAlarmH.Text;
+
+                MessageBox.Show(this, "Default Config updated", "Succsess", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
@@ -267,14 +269,14 @@ namespace Arbeidskrav_1
         {
             toolTip1.AutoPopDelay = 200;
             toolTip1.AutoPopDelay = 10000;
-            toolTip1.SetToolTip(buttonSaveDefaultConfig, "Save config to File");
+            toolTip1.SetToolTip(buttonSaveDefaultConfig, "Save new Default Config");
         }
 
         private void buttonLoadDefaultConfig_MouseHover(object sender, EventArgs e)
         {
             toolTip1.AutoPopDelay = 200;
             toolTip1.AutoPopDelay = 10000;
-            toolTip1.SetToolTip(buttonLoadDefaultConfig, "Load config from File");
+            toolTip1.SetToolTip(buttonLoadDefaultConfig, "Load existing config from File");
         }
 
         private void buttonClose_MouseHover(object sender, EventArgs e)

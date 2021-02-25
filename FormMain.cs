@@ -48,10 +48,13 @@ namespace Arbeidskrav_1
         //Enables and disables bool values accordingly.
         void disconnect()
         {
+            if (serialPort1.BytesToRead > 0)
+                serialPort1.ReadExisting();
             serialPort1.Close();
             connected = false;
-            textBoxConnection.Text = "Disconnected";
-            toolStripStatusLabel1.Text = "COM Status: Disconnected";
+            textBoxConnection.Text = "Disconnected";          
+            toolStripStatusLabelConnection.Text = "Disconnected";
+            toolStripStatusLabelConnection.ForeColor = Color.Red;
             toolStripProgressBarConnection.Value = 0;
             timerConnection.Enabled = false;
             buttonRead.Enabled = false;
@@ -62,6 +65,8 @@ namespace Arbeidskrav_1
             buttonDisconnect.Enabled = false;
             timerReceive.Enabled = false;
             timerSend.Enabled = false;
+            readconf = false;
+            writeconf = false;
             textBoxCName.Text = "";
             textBoxCLRV.Text = "";
             textBoxCURV.Text = "";
@@ -380,8 +385,9 @@ namespace Arbeidskrav_1
                 if (!error)
                 {
                     connected = true;
-                    textBoxConnection.Text = "Connected";
-                    toolStripStatusLabel1.Text = "COM Status: Connected";
+                    textBoxConnection.Text = "Connected";     
+                    toolStripStatusLabelConnection.Text = "Connected";
+                    toolStripStatusLabelConnection.ForeColor = Color.Green;
                     toolStripProgressBarConnection.Value = 100;
                     timerConnection.Enabled = true;
                     buttonRead.Enabled = true;
@@ -576,11 +582,18 @@ namespace Arbeidskrav_1
                 {
                     chartvalues = indata.Split(';');
 
-                    textBoxCName.Text = chartvalues[0];
-                    textBoxCLRV.Text = chartvalues[1];
-                    textBoxCURV.Text = chartvalues[2];
-                    textBoxCAlarmL.Text = chartvalues[3];
-                    textBoxCAlarmH.Text = chartvalues[4];
+                    if (chartvalues.Length == 5)
+                    {
+                        textBoxCName.Text = chartvalues[0];
+                        textBoxCLRV.Text = chartvalues[1];
+                        textBoxCURV.Text = chartvalues[2];
+                        textBoxCAlarmL.Text = chartvalues[3];
+                        textBoxCAlarmH.Text = chartvalues[4];
+                    }
+                    else
+                    {
+                        MessageBox.Show(this, "Unable to Read received Config", "Read Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                     readconf = false;
                 }
                 else if (writeconf)
@@ -624,24 +637,32 @@ namespace Arbeidskrav_1
                         if (statusVal == 0)
                         {
                             textBoxIStatus.Text = "OK";
+                            textBoxIStatus.ForeColor = Color.Green;
                             pictureBoxSignalStatus.Image = Arbeidskrav_1.Properties.Resources.StatusOK_16x;
+                            toolStripStatusLabelMStaus.ForeColor = Color.Green;
                         }
                         else if (statusVal == 1)
                         {
                             textBoxIStatus.Text = "Fail";
+                            textBoxIStatus.ForeColor = Color.Red;
                             pictureBoxSignalStatus.Image = Arbeidskrav_1.Properties.Resources.StatusCriticalError_16x;
+                            toolStripStatusLabelMStaus.ForeColor = Color.Red;
                         }
                         else if (statusVal == 2)
-                        {
+                        {                            
                             textBoxIStatus.Text = "Alarm Low";
+                            textBoxIStatus.ForeColor = Color.Orange;
                             pictureBoxSignalStatus.Image = Arbeidskrav_1.Properties.Resources.StatusWarning_16x;
+                            toolStripStatusLabelMStaus.ForeColor = Color.Orange;
                         }
                         else if (statusVal == 3)
                         {
                             textBoxIStatus.Text = "Alarm High";
+                            textBoxIStatus.ForeColor = Color.Orange;
                             pictureBoxSignalStatus.Image = Arbeidskrav_1.Properties.Resources.StatusWarning_16x;
+                            toolStripStatusLabelMStaus.ForeColor = Color.Orange;
                         }
-                        
+                        toolStripStatusLabelMStaus.Text = textBoxIStatus.Text;
                         if (statusVal <= 3)
                         {
                             statuscheckCounter = 0;
@@ -733,7 +754,7 @@ namespace Arbeidskrav_1
         //Starts Monitoring
         private void buttonStart_Click(object sender, EventArgs e)
         {
-            if (serialPort1.IsOpen)
+            if (serialPort1.IsOpen && !writeconf && !readconf)
             {
                 monitorStart = true;
                 statuscheck = true;
@@ -744,6 +765,8 @@ namespace Arbeidskrav_1
                 buttonStart.Enabled = false;
                 buttonStop.Enabled = true;
                 buttonSaveData.Enabled = false;
+                toolStripStatusLabelMonitoring.Visible = true;
+                toolStripStatusLabelMStaus.Visible = true;
             }
         }
 
@@ -757,6 +780,8 @@ namespace Arbeidskrav_1
             buttonRead.Enabled = true;
             buttonStop.Enabled = false;
             buttonSaveData.Enabled = true;
+            toolStripStatusLabelMonitoring.Visible = false;
+            toolStripStatusLabelMStaus.Visible = false;
 
             string dataType = "Scaled Values";
 
