@@ -19,6 +19,17 @@ namespace Arbeidskrav_1
         
         private void textBoxPassword_KeyPress(object sender, KeyPressEventArgs e)
         {
+
+            switch (e.KeyChar)
+            {
+                case ';':
+                case '>':
+                    e.Handled = true;
+                    break;
+                default:
+
+                    break;
+            }
             if (e.KeyChar == 13)
             {
                 e.Handled = true;

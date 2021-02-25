@@ -46,6 +46,8 @@ namespace Arbeidskrav_1
             this.toolStripMenuItemSave = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemSaveAs = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemExit = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemSettings = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemDefaultConfig = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemHelp = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
@@ -95,6 +97,7 @@ namespace Arbeidskrav_1
             this.textBoxIStatus = new System.Windows.Forms.TextBox();
             this.labelScaled = new System.Windows.Forms.Label();
             this.labelRaw = new System.Windows.Forms.Label();
+            this.pictureBoxSignalStatus = new System.Windows.Forms.PictureBox();
             this.listBoxScaled = new System.Windows.Forms.ListBox();
             this.listBoxRaw = new System.Windows.Forms.ListBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -108,9 +111,6 @@ namespace Arbeidskrav_1
             this.timerSend = new System.Windows.Forms.Timer(this.components);
             this.timerReceive = new System.Windows.Forms.Timer(this.components);
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.toolStripMenuItemSettings = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItemDefaultConfig = new System.Windows.Forms.ToolStripMenuItem();
-            this.pictureBoxSignalStatus = new System.Windows.Forms.PictureBox();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -119,8 +119,8 @@ namespace Arbeidskrav_1
             this.panelConnection.SuspendLayout();
             this.tabPageMonitoring.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chartScaled)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.chartRaw)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxSignalStatus)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chartRaw)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -149,30 +149,45 @@ namespace Arbeidskrav_1
             // toolStripMenuItemOpen
             // 
             this.toolStripMenuItemOpen.Name = "toolStripMenuItemOpen";
-            this.toolStripMenuItemOpen.Size = new System.Drawing.Size(162, 22);
+            this.toolStripMenuItemOpen.Size = new System.Drawing.Size(180, 22);
             this.toolStripMenuItemOpen.Text = "&Load Config";
             this.toolStripMenuItemOpen.Click += new System.EventHandler(this.toolStripMenuItemOpen_Click);
             // 
             // toolStripMenuItemSave
             // 
             this.toolStripMenuItemSave.Name = "toolStripMenuItemSave";
-            this.toolStripMenuItemSave.Size = new System.Drawing.Size(162, 22);
+            this.toolStripMenuItemSave.Size = new System.Drawing.Size(180, 22);
             this.toolStripMenuItemSave.Text = "&Save Config";
             this.toolStripMenuItemSave.Click += new System.EventHandler(this.toolStripMenuItemSave_Click);
             // 
             // toolStripMenuItemSaveAs
             // 
             this.toolStripMenuItemSaveAs.Name = "toolStripMenuItemSaveAs";
-            this.toolStripMenuItemSaveAs.Size = new System.Drawing.Size(162, 22);
+            this.toolStripMenuItemSaveAs.Size = new System.Drawing.Size(180, 22);
             this.toolStripMenuItemSaveAs.Text = "Save Config &As...";
             this.toolStripMenuItemSaveAs.Click += new System.EventHandler(this.toolStripMenuItemSaveAs_Click);
             // 
             // toolStripMenuItemExit
             // 
             this.toolStripMenuItemExit.Name = "toolStripMenuItemExit";
-            this.toolStripMenuItemExit.Size = new System.Drawing.Size(162, 22);
+            this.toolStripMenuItemExit.Size = new System.Drawing.Size(180, 22);
             this.toolStripMenuItemExit.Text = "E&xit";
             this.toolStripMenuItemExit.Click += new System.EventHandler(this.toolStripMenuItemExit_Click);
+            // 
+            // toolStripMenuItemSettings
+            // 
+            this.toolStripMenuItemSettings.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItemDefaultConfig});
+            this.toolStripMenuItemSettings.Name = "toolStripMenuItemSettings";
+            this.toolStripMenuItemSettings.Size = new System.Drawing.Size(61, 20);
+            this.toolStripMenuItemSettings.Text = "Se&ttings";
+            // 
+            // toolStripMenuItemDefaultConfig
+            // 
+            this.toolStripMenuItemDefaultConfig.Name = "toolStripMenuItemDefaultConfig";
+            this.toolStripMenuItemDefaultConfig.Size = new System.Drawing.Size(195, 22);
+            this.toolStripMenuItemDefaultConfig.Text = "Change &Default Config";
+            this.toolStripMenuItemDefaultConfig.Click += new System.EventHandler(this.toolStripMenuItemDefaultConfig_Click);
             // 
             // toolStripMenuItemHelp
             // 
@@ -305,6 +320,7 @@ namespace Arbeidskrav_1
             this.textBoxName.TabIndex = 24;
             this.textBoxName.Text = "C385IT001";
             this.textBoxName.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxName_KeyPress);
+            this.textBoxName.MouseHover += new System.EventHandler(this.textBoxName_MouseHover);
             // 
             // buttonLoad
             // 
@@ -325,6 +341,7 @@ namespace Arbeidskrav_1
             this.textBoxLRV.TabIndex = 25;
             this.textBoxLRV.Text = "0.0";
             this.textBoxLRV.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxLRV_KeyPress);
+            this.textBoxLRV.MouseHover += new System.EventHandler(this.textBoxLRV_MouseHover);
             // 
             // textBoxCAlarmH
             // 
@@ -343,6 +360,7 @@ namespace Arbeidskrav_1
             this.textBoxURV.TabIndex = 26;
             this.textBoxURV.Text = "500.0";
             this.textBoxURV.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxLRV_KeyPress);
+            this.textBoxURV.MouseHover += new System.EventHandler(this.textBoxURV_MouseHover);
             // 
             // textBoxAlarmL
             // 
@@ -352,6 +370,7 @@ namespace Arbeidskrav_1
             this.textBoxAlarmL.TabIndex = 27;
             this.textBoxAlarmL.Text = "40";
             this.textBoxAlarmL.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxAlarmL_KeyPress);
+            this.textBoxAlarmL.MouseHover += new System.EventHandler(this.textBoxAlarmL_MouseHover);
             // 
             // textBoxCURV
             // 
@@ -370,6 +389,7 @@ namespace Arbeidskrav_1
             this.textBoxAlarmH.TabIndex = 28;
             this.textBoxAlarmH.Text = "440";
             this.textBoxAlarmH.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxAlarmL_KeyPress);
+            this.textBoxAlarmH.MouseHover += new System.EventHandler(this.textBoxAlarmH_MouseHover);
             // 
             // textBoxCLRV
             // 
@@ -629,16 +649,19 @@ namespace Arbeidskrav_1
             // 
             // chartScaled
             // 
+            chartArea1.AxisX.Title = "Time";
+            chartArea1.AxisY.Title = "Lux";
             chartArea1.Name = "ChartArea1";
             this.chartScaled.ChartAreas.Add(chartArea1);
             this.chartScaled.Enabled = false;
             legend1.Name = "Legend1";
             this.chartScaled.Legends.Add(legend1);
-            this.chartScaled.Location = new System.Drawing.Point(165, 12);
+            this.chartScaled.Location = new System.Drawing.Point(165, 15);
             this.chartScaled.Name = "chartScaled";
             series1.ChartArea = "ChartArea1";
             series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
             series1.Legend = "Legend1";
+            series1.LegendText = "Scaled";
             series1.Name = "Scaled";
             this.chartScaled.Series.Add(series1);
             this.chartScaled.Size = new System.Drawing.Size(619, 343);
@@ -688,6 +711,17 @@ namespace Arbeidskrav_1
             this.labelRaw.TabIndex = 8;
             this.labelRaw.Text = "Raw";
             this.labelRaw.Visible = false;
+            // 
+            // pictureBoxSignalStatus
+            // 
+            this.pictureBoxSignalStatus.ErrorImage = global::Arbeidskrav_1.Properties.Resources.StatusCriticalError_16x;
+            this.pictureBoxSignalStatus.Image = global::Arbeidskrav_1.Properties.Resources.StatusOffline_16x;
+            this.pictureBoxSignalStatus.InitialImage = global::Arbeidskrav_1.Properties.Resources.StatusOK_16x;
+            this.pictureBoxSignalStatus.Location = new System.Drawing.Point(108, 97);
+            this.pictureBoxSignalStatus.Name = "pictureBoxSignalStatus";
+            this.pictureBoxSignalStatus.Size = new System.Drawing.Size(16, 16);
+            this.pictureBoxSignalStatus.TabIndex = 16;
+            this.pictureBoxSignalStatus.TabStop = false;
             // 
             // listBoxScaled
             // 
@@ -765,6 +799,8 @@ namespace Arbeidskrav_1
             // 
             // chartRaw
             // 
+            chartArea2.AxisX.Title = "Time";
+            chartArea2.AxisY.Title = "Volt";
             chartArea2.Name = "ChartArea1";
             this.chartRaw.ChartAreas.Add(chartArea2);
             legend2.Name = "Legend1";
@@ -806,32 +842,6 @@ namespace Arbeidskrav_1
             this.timerReceive.Interval = 700;
             this.timerReceive.Tick += new System.EventHandler(this.timerReceive_Tick);
             // 
-            // toolStripMenuItemSettings
-            // 
-            this.toolStripMenuItemSettings.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripMenuItemDefaultConfig});
-            this.toolStripMenuItemSettings.Name = "toolStripMenuItemSettings";
-            this.toolStripMenuItemSettings.Size = new System.Drawing.Size(61, 20);
-            this.toolStripMenuItemSettings.Text = "Se&ttings";
-            // 
-            // toolStripMenuItemDefaultConfig
-            // 
-            this.toolStripMenuItemDefaultConfig.Name = "toolStripMenuItemDefaultConfig";
-            this.toolStripMenuItemDefaultConfig.Size = new System.Drawing.Size(195, 22);
-            this.toolStripMenuItemDefaultConfig.Text = "Change &Default Config";
-            this.toolStripMenuItemDefaultConfig.Click += new System.EventHandler(this.toolStripMenuItemDefaultConfig_Click);
-            // 
-            // pictureBoxSignalStatus
-            // 
-            this.pictureBoxSignalStatus.ErrorImage = global::Arbeidskrav_1.Properties.Resources.StatusCriticalError_16x;
-            this.pictureBoxSignalStatus.Image = global::Arbeidskrav_1.Properties.Resources.StatusOffline_16x;
-            this.pictureBoxSignalStatus.InitialImage = global::Arbeidskrav_1.Properties.Resources.StatusOK_16x;
-            this.pictureBoxSignalStatus.Location = new System.Drawing.Point(108, 97);
-            this.pictureBoxSignalStatus.Name = "pictureBoxSignalStatus";
-            this.pictureBoxSignalStatus.Size = new System.Drawing.Size(16, 16);
-            this.pictureBoxSignalStatus.TabIndex = 16;
-            this.pictureBoxSignalStatus.TabStop = false;
-            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -863,8 +873,8 @@ namespace Arbeidskrav_1
             this.tabPageMonitoring.ResumeLayout(false);
             this.tabPageMonitoring.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chartScaled)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.chartRaw)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxSignalStatus)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chartRaw)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

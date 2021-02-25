@@ -262,5 +262,26 @@ namespace Arbeidskrav_1
                 textBoxAlarmH.Text = config[4];
             }
         }
+
+        private void buttonSaveDefaultConfig_MouseHover(object sender, EventArgs e)
+        {
+            toolTip1.AutoPopDelay = 200;
+            toolTip1.AutoPopDelay = 10000;
+            toolTip1.SetToolTip(buttonSaveDefaultConfig, "Save config to File");
+        }
+
+        private void buttonLoadDefaultConfig_MouseHover(object sender, EventArgs e)
+        {
+            toolTip1.AutoPopDelay = 200;
+            toolTip1.AutoPopDelay = 10000;
+            toolTip1.SetToolTip(buttonLoadDefaultConfig, "Load config from File");
+        }
+
+        private void buttonClose_MouseHover(object sender, EventArgs e)
+        {
+            toolTip1.AutoPopDelay = 200;
+            toolTip1.AutoPopDelay = 10000;
+            toolTip1.SetToolTip(buttonClose, "Close Default Config Window");
+        }
     }
 }

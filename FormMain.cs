@@ -36,7 +36,6 @@ namespace Arbeidskrav_1
         bool statusRead = true;
         string version = "1.0.0.1";
         
-        
         double statusVal = 0;
         int statuscheckCounter = 0;
         int pointXValueRaw = 0;
@@ -63,6 +62,11 @@ namespace Arbeidskrav_1
             buttonDisconnect.Enabled = false;
             timerReceive.Enabled = false;
             timerSend.Enabled = false;
+            textBoxCName.Text = "";
+            textBoxCLRV.Text = "";
+            textBoxCURV.Text = "";
+            textBoxCAlarmL.Text = "";
+            textBoxCAlarmH.Text = "";
         }
 
         //Checks if entered config values are valid
@@ -304,7 +308,18 @@ namespace Arbeidskrav_1
             if (saveFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 fileName = saveFileDialog1.FileName;
-                File.WriteAllText(fileName, valuesText);
+                //File.WriteAllText(fileName, valuesText);
+                
+                try
+                { 
+                     File.WriteAllText(fileName, valuesText); 
+                }
+                catch(IOException)
+                {
+                    MessageBox.Show(this, "File:" + fileName + "\nIs open in another program. \nCan't write to File.","Error",
+                                                                                        MessageBoxButtons.OK,MessageBoxIcon.Error);
+                }
+                
             }
         }
 
@@ -375,9 +390,12 @@ namespace Arbeidskrav_1
                     buttonDisconnect.Enabled = true;
                     timerSend.Enabled = true;
                     buttonStart.Enabled = true;
+                    
                 }
                 
                 result = MessageBox.Show(this, message, caption, buttons, icon);
+                if (connected)
+                buttonRead_Click(this, e);
             }
         }
 
@@ -423,7 +441,16 @@ namespace Arbeidskrav_1
         {
             if (configCheck())
             {
-                File.WriteAllText(string.Format("{0}_Config_V{1}.ssc", textBoxName.Text,version), configMake());
+                string fileName = string.Format("{0}_Config_V{1}.ssc", textBoxName.Text, version);
+                try
+                {
+                    File.WriteAllText(fileName, configMake());
+                }
+                catch (IOException)
+                {
+                    MessageBox.Show(this, "File:" + fileName + "\nIs open in another program. \nCan't write to File.", "Error",
+                                                                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 
@@ -468,8 +495,16 @@ namespace Arbeidskrav_1
                 if (saveFileDialog1.ShowDialog() == DialogResult.OK)
                 {
                     string fileName = saveFileDialog1.FileName;
-                    
-                    File.WriteAllText(fileName, configMake());
+
+                    try
+                    {
+                        File.WriteAllText(fileName, configMake());
+                    }
+                    catch (IOException)
+                    {
+                        MessageBox.Show(this, "File:" + fileName + "\nIs open in another program. \nCan't write to File.", "Error",
+                                                                                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
             }
         }
@@ -535,9 +570,8 @@ namespace Arbeidskrav_1
             if (serialPort1.IsOpen && serialPort1.BytesToRead > 0)
             {
                 indata = serialPort1.ReadExisting();
-                System.Console.Write(indata+"");
-               
- 
+                //System.Console.Write(indata+"");
+           
                 if (readconf)
                 {
                     chartvalues = indata.Split(';');
@@ -587,22 +621,22 @@ namespace Arbeidskrav_1
                         monitor = true;
                         statusVal = Convert.ToInt32(indata);
 
-                        if (indata == "0" || statusVal == 0)
+                        if (statusVal == 0)
                         {
                             textBoxIStatus.Text = "OK";
                             pictureBoxSignalStatus.Image = Arbeidskrav_1.Properties.Resources.StatusOK_16x;
                         }
-                        else if (indata == "1" || statusVal == 1)
+                        else if (statusVal == 1)
                         {
                             textBoxIStatus.Text = "Fail";
                             pictureBoxSignalStatus.Image = Arbeidskrav_1.Properties.Resources.StatusCriticalError_16x;
                         }
-                        else if (indata == "2" || statusVal == 2)
+                        else if (statusVal == 2)
                         {
                             textBoxIStatus.Text = "Alarm Low";
                             pictureBoxSignalStatus.Image = Arbeidskrav_1.Properties.Resources.StatusWarning_16x;
                         }
-                        else if (indata == "3" || statusVal == 3)
+                        else if (statusVal == 3)
                         {
                             textBoxIStatus.Text = "Alarm High";
                             pictureBoxSignalStatus.Image = Arbeidskrav_1.Properties.Resources.StatusWarning_16x;
@@ -618,25 +652,31 @@ namespace Arbeidskrav_1
                     }
                     else if (monitor)
                     {
-                        if (checkBoxSignalRaw.Checked)
-                        {
-                            chartRaw.Series[0].Points.AddXY(pointXValueRaw, Convert.ToInt32(indata));
-                            textBoxSensorData.AppendText(indata+"\r\n");
-                            listBoxRaw.Items.Add(indata);
-                            pointXValueRaw += 1;
+                        string timeNow = DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString() + ":" + DateTime.Now.Second.ToString();
 
+                        if (checkBoxSignalRaw.Checked)
+                        { 
+                            chartRaw.Series[0].Points.AddXY( timeNow , Convert.ToInt32(indata));
+                            listBoxRaw.Items.Add(indata);
+                            if (!indata.Contains("\r\n"))
+                                indata = indata + "\r\n";
+                            textBoxSensorData.AppendText(indata);
+                            pointXValueRaw += 1;
                         }
                         else
                         {
-                            chartScaled.Series[0].Points.AddXY(pointXValueScaled, Convert.ToDouble(indata));
-                            textBoxSensorData.AppendText(indata + "\r\n");
+                            chartScaled.Series[0].Points.AddXY(timeNow, Convert.ToDouble(indata));
                             listBoxScaled.Items.Add(indata);
+                            if (!indata.Contains("\r\n"))
+                                indata = indata + "\r\n";
+                            textBoxSensorData.AppendText(indata);
                             pointXValueScaled += 1;
-
                         }
+
                         statuscheckCounter += 1;
                         monitorRead = true;
-                        if (statuscheckCounter == 6)
+
+                        if (statuscheckCounter == 5)
                         {
                             statuscheck = true;
                         }
@@ -652,7 +692,7 @@ namespace Arbeidskrav_1
         //Sends Read Config Request via the serial port
         private void buttonRead_Click(object sender, EventArgs e)
         {
-            if (!readconf)
+            if (!readconf && !writeconf)
             {
                 serialPort1.Write("readconf");
                 readconf = true;
@@ -662,7 +702,7 @@ namespace Arbeidskrav_1
         //Writes Config values to Serial port and saves a backup
         private void buttonWrite_Click(object sender, EventArgs e)
         {
-            if (!writeconf)
+            if (!writeconf && !readconf)
             {
                 if (configCheck())
                 {
@@ -671,7 +711,16 @@ namespace Arbeidskrav_1
                     passwordwindow.ShowDialog(this);
                     if (!cancel)
                     {
-                        File.WriteAllText(string.Format("Backup_Config_{0}_{1}.ssc", textBoxName.Text, version), data);
+                        string fileName = string.Format("Backup_Config_{0}_{1}.ssc", textBoxName.Text, version);
+                        try
+                        {
+                            File.WriteAllText(fileName, data);
+                        }
+                        catch (IOException)
+                        {
+                            MessageBox.Show(this, "File:" + fileName + "\nIs open in another program. \nCan't write to File.", "Error",
+                                                                                                MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
                         serialPort1.Write(String.Format("writeconf>{0}>{1}", configPassword, data));
                         writeconf = true;
                     }
@@ -873,7 +922,7 @@ namespace Arbeidskrav_1
                 string message = "You are monitoring do you want to Save and Exit?";
                 string caption = "Exit Confirmation";
 
-                DialogResult result = MessageBox.Show(this, message, caption, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                DialogResult result = MessageBox.Show(this, message, caption, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
 
                 if (result == DialogResult.Cancel)
                 {
@@ -892,7 +941,7 @@ namespace Arbeidskrav_1
         {
             toolTip1.AutoPopDelay = 200;
             toolTip1.AutoPopDelay = 10000;
-            toolTip1.SetToolTip(buttonRead, "To read config from microcontroller");
+            toolTip1.SetToolTip(buttonRead, "Read Config from microcontroller");
         }
 
         //Tooltip write Config to Device 
@@ -900,7 +949,7 @@ namespace Arbeidskrav_1
         {
             toolTip1.AutoPopDelay = 200;
             toolTip1.AutoPopDelay = 10000;
-            toolTip1.SetToolTip(buttonWrite, "To Write config to microcontroller");
+            toolTip1.SetToolTip(buttonWrite, "Write Config to microcontroller");
         }
 
         //Tooltip Load Config from File
@@ -908,7 +957,7 @@ namespace Arbeidskrav_1
         {
             toolTip1.AutoPopDelay = 200;
             toolTip1.AutoPopDelay = 10000;
-            toolTip1.SetToolTip(buttonLoad, "To Load config from File");
+            toolTip1.SetToolTip(buttonLoad, "Load config from File");
         }
 
         //Tooltips
@@ -916,7 +965,7 @@ namespace Arbeidskrav_1
         {
             toolTip1.AutoPopDelay = 200;
             toolTip1.AutoPopDelay = 10000;
-            toolTip1.SetToolTip(buttonSave, "To save config from File");
+            toolTip1.SetToolTip(buttonSave, "Save config to File");
         }
 
         //Tooltips Connect
@@ -973,6 +1022,41 @@ namespace Arbeidskrav_1
         {
             DefaultConfigSettings defaultConfigWindow = new DefaultConfigSettings();
             defaultConfigWindow.Show(this);
+        }
+
+        private void textBoxName_MouseHover(object sender, EventArgs e)
+        {
+            toolTip1.AutoPopDelay = 200;
+            toolTip1.AutoPopDelay = 10000;
+            toolTip1.SetToolTip(textBoxName, "Enter Name of Device (Maximun 10 Characters)\n Not:(\' > \'),(\' ; \')");
+        }
+
+        private void textBoxLRV_MouseHover(object sender, EventArgs e)
+        {
+            toolTip1.AutoPopDelay = 200;
+            toolTip1.AutoPopDelay = 10000;
+            toolTip1.SetToolTip(textBoxLRV, "Enter Low Range Value (decimal numbers allowed)");
+        }
+
+        private void textBoxURV_MouseHover(object sender, EventArgs e)
+        {
+            toolTip1.AutoPopDelay = 200;
+            toolTip1.AutoPopDelay = 10000;
+            toolTip1.SetToolTip(textBoxURV, "Enter Upper Range Value (decimal numbers allowed)");
+        }
+
+        private void textBoxAlarmL_MouseHover(object sender, EventArgs e)
+        {
+            toolTip1.AutoPopDelay = 200;
+            toolTip1.AutoPopDelay = 10000;
+            toolTip1.SetToolTip(textBoxAlarmL, "Enter Alarm Low Value (Only Integers)");
+        }
+
+        private void textBoxAlarmH_MouseHover(object sender, EventArgs e)
+        {
+            toolTip1.AutoPopDelay = 200;
+            toolTip1.AutoPopDelay = 10000;
+            toolTip1.SetToolTip(textBoxAlarmH, "Enter Alarm High Value (Only Integers)");
         }
     }      
 }

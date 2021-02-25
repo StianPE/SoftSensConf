@@ -29,6 +29,7 @@ namespace Arbeidskrav_1
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DefaultConfigSettings));
             this.panelConfiguration = new System.Windows.Forms.Panel();
             this.buttonClose = new System.Windows.Forms.Button();
@@ -53,6 +54,7 @@ namespace Arbeidskrav_1
             this.buttonSaveDefaultConfig = new System.Windows.Forms.Button();
             this.labelAlarmH = new System.Windows.Forms.Label();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.panelConfiguration.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -94,14 +96,15 @@ namespace Arbeidskrav_1
             this.buttonClose.Name = "buttonClose";
             this.buttonClose.Size = new System.Drawing.Size(98, 23);
             this.buttonClose.TabIndex = 47;
-            this.buttonClose.Text = "Close";
+            this.buttonClose.Text = "&Close";
             this.buttonClose.UseVisualStyleBackColor = true;
             this.buttonClose.Click += new System.EventHandler(this.buttonClose_Click);
+            this.buttonClose.MouseHover += new System.EventHandler(this.buttonClose_MouseHover);
             // 
             // labelInput
             // 
             this.labelInput.AutoSize = true;
-            this.labelInput.Location = new System.Drawing.Point(233, 71);
+            this.labelInput.Location = new System.Drawing.Point(127, 71);
             this.labelInput.Name = "labelInput";
             this.labelInput.Size = new System.Drawing.Size(67, 13);
             this.labelInput.TabIndex = 44;
@@ -119,7 +122,7 @@ namespace Arbeidskrav_1
             // 
             // textBoxCAlarmL
             // 
-            this.textBoxCAlarmL.Location = new System.Drawing.Point(128, 165);
+            this.textBoxCAlarmL.Location = new System.Drawing.Point(236, 165);
             this.textBoxCAlarmL.Name = "textBoxCAlarmL";
             this.textBoxCAlarmL.ReadOnly = true;
             this.textBoxCAlarmL.Size = new System.Drawing.Size(100, 20);
@@ -128,33 +131,32 @@ namespace Arbeidskrav_1
             // 
             // textBoxName
             // 
-            this.textBoxName.Location = new System.Drawing.Point(234, 87);
+            this.textBoxName.Location = new System.Drawing.Point(128, 87);
             this.textBoxName.Name = "textBoxName";
             this.textBoxName.Size = new System.Drawing.Size(100, 20);
             this.textBoxName.TabIndex = 24;
-            this.textBoxName.Text = "C385IT001";
             // 
             // buttonLoadDefaultConfig
             // 
-            this.buttonLoadDefaultConfig.Location = new System.Drawing.Point(234, 217);
+            this.buttonLoadDefaultConfig.Location = new System.Drawing.Point(128, 217);
             this.buttonLoadDefaultConfig.Name = "buttonLoadDefaultConfig";
             this.buttonLoadDefaultConfig.Size = new System.Drawing.Size(100, 23);
             this.buttonLoadDefaultConfig.TabIndex = 32;
             this.buttonLoadDefaultConfig.Text = "&Load";
             this.buttonLoadDefaultConfig.UseVisualStyleBackColor = true;
             this.buttonLoadDefaultConfig.Click += new System.EventHandler(this.buttonLoadDefaultConfig_Click);
+            this.buttonLoadDefaultConfig.MouseHover += new System.EventHandler(this.buttonLoadDefaultConfig_MouseHover);
             // 
             // textBoxLRV
             // 
-            this.textBoxLRV.Location = new System.Drawing.Point(234, 113);
+            this.textBoxLRV.Location = new System.Drawing.Point(128, 113);
             this.textBoxLRV.Name = "textBoxLRV";
             this.textBoxLRV.Size = new System.Drawing.Size(100, 20);
             this.textBoxLRV.TabIndex = 25;
-            this.textBoxLRV.Text = "0.0";
             // 
             // textBoxCAlarmH
             // 
-            this.textBoxCAlarmH.Location = new System.Drawing.Point(128, 191);
+            this.textBoxCAlarmH.Location = new System.Drawing.Point(236, 191);
             this.textBoxCAlarmH.Name = "textBoxCAlarmH";
             this.textBoxCAlarmH.ReadOnly = true;
             this.textBoxCAlarmH.Size = new System.Drawing.Size(100, 20);
@@ -163,23 +165,21 @@ namespace Arbeidskrav_1
             // 
             // textBoxURV
             // 
-            this.textBoxURV.Location = new System.Drawing.Point(234, 139);
+            this.textBoxURV.Location = new System.Drawing.Point(128, 139);
             this.textBoxURV.Name = "textBoxURV";
             this.textBoxURV.Size = new System.Drawing.Size(100, 20);
             this.textBoxURV.TabIndex = 26;
-            this.textBoxURV.Text = "500.0";
             // 
             // textBoxAlarmL
             // 
-            this.textBoxAlarmL.Location = new System.Drawing.Point(234, 165);
+            this.textBoxAlarmL.Location = new System.Drawing.Point(128, 165);
             this.textBoxAlarmL.Name = "textBoxAlarmL";
             this.textBoxAlarmL.Size = new System.Drawing.Size(100, 20);
             this.textBoxAlarmL.TabIndex = 27;
-            this.textBoxAlarmL.Text = "40";
             // 
             // textBoxCURV
             // 
-            this.textBoxCURV.Location = new System.Drawing.Point(128, 139);
+            this.textBoxCURV.Location = new System.Drawing.Point(236, 139);
             this.textBoxCURV.Name = "textBoxCURV";
             this.textBoxCURV.ReadOnly = true;
             this.textBoxCURV.Size = new System.Drawing.Size(100, 20);
@@ -188,15 +188,14 @@ namespace Arbeidskrav_1
             // 
             // textBoxAlarmH
             // 
-            this.textBoxAlarmH.Location = new System.Drawing.Point(234, 191);
+            this.textBoxAlarmH.Location = new System.Drawing.Point(128, 191);
             this.textBoxAlarmH.Name = "textBoxAlarmH";
             this.textBoxAlarmH.Size = new System.Drawing.Size(100, 20);
             this.textBoxAlarmH.TabIndex = 28;
-            this.textBoxAlarmH.Text = "440";
             // 
             // textBoxCLRV
             // 
-            this.textBoxCLRV.Location = new System.Drawing.Point(128, 113);
+            this.textBoxCLRV.Location = new System.Drawing.Point(236, 113);
             this.textBoxCLRV.Name = "textBoxCLRV";
             this.textBoxCLRV.ReadOnly = true;
             this.textBoxCLRV.Size = new System.Drawing.Size(100, 20);
@@ -214,7 +213,7 @@ namespace Arbeidskrav_1
             // 
             // textBoxCName
             // 
-            this.textBoxCName.Location = new System.Drawing.Point(128, 87);
+            this.textBoxCName.Location = new System.Drawing.Point(236, 87);
             this.textBoxCName.Name = "textBoxCName";
             this.textBoxCName.ReadOnly = true;
             this.textBoxCName.Size = new System.Drawing.Size(100, 20);
@@ -233,7 +232,7 @@ namespace Arbeidskrav_1
             // labelCurrenDefaultConfig
             // 
             this.labelCurrenDefaultConfig.AutoSize = true;
-            this.labelCurrenDefaultConfig.Location = new System.Drawing.Point(125, 71);
+            this.labelCurrenDefaultConfig.Location = new System.Drawing.Point(233, 71);
             this.labelCurrenDefaultConfig.Name = "labelCurrenDefaultConfig";
             this.labelCurrenDefaultConfig.Size = new System.Drawing.Size(108, 13);
             this.labelCurrenDefaultConfig.TabIndex = 38;
@@ -259,13 +258,14 @@ namespace Arbeidskrav_1
             // 
             // buttonSaveDefaultConfig
             // 
-            this.buttonSaveDefaultConfig.Location = new System.Drawing.Point(128, 217);
+            this.buttonSaveDefaultConfig.Location = new System.Drawing.Point(236, 217);
             this.buttonSaveDefaultConfig.Name = "buttonSaveDefaultConfig";
             this.buttonSaveDefaultConfig.Size = new System.Drawing.Size(100, 23);
             this.buttonSaveDefaultConfig.TabIndex = 35;
             this.buttonSaveDefaultConfig.Text = "&Save";
             this.buttonSaveDefaultConfig.UseVisualStyleBackColor = true;
             this.buttonSaveDefaultConfig.Click += new System.EventHandler(this.buttonSaveDefaultConfig_Click);
+            this.buttonSaveDefaultConfig.MouseHover += new System.EventHandler(this.buttonSaveDefaultConfig_MouseHover);
             // 
             // labelAlarmH
             // 
@@ -325,5 +325,6 @@ namespace Arbeidskrav_1
         private System.Windows.Forms.Label labelAlarmH;
         private System.Windows.Forms.Button buttonClose;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }
