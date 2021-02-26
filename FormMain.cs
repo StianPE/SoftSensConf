@@ -34,10 +34,11 @@ namespace Arbeidskrav_1
         bool statuscheck = false;
         bool monitorRead = true;
         bool statusRead = true;
-        string version = "1.0.0.1";
+        string version = "1.0.1.3";
         
         double statusVal = 0;
         int statuscheckCounter = 0;
+        int timeout = 0;
         int pointXValueRaw = 0;
         int pointXValueScaled = 0;
         public static string configPassword = "";
@@ -46,10 +47,9 @@ namespace Arbeidskrav_1
 
         //Disconnects serial port
         //Enables and disables bool values accordingly.
-        void disconnect()
-        {
-            if (serialPort1.BytesToRead > 0)
-                serialPort1.ReadExisting();
+        void Disconnect(object sender, EventArgs e)
+        {   
+            
             serialPort1.Close();
             connected = false;
             textBoxConnection.Text = "Disconnected";          
@@ -72,10 +72,12 @@ namespace Arbeidskrav_1
             textBoxCURV.Text = "";
             textBoxCAlarmL.Text = "";
             textBoxCAlarmH.Text = "";
+            if (monitorStart)
+                buttonStop_Click(sender,e);
         }
 
         //Checks if entered config values are valid
-        bool configCheck()
+        bool ConfigCheck()
         {
             double fConVal = 0;
             int iConVal = 0;
@@ -259,7 +261,7 @@ namespace Arbeidskrav_1
         }
 
         //Combines Config text boxes to a String
-        string configMake()
+        string ConfigMake()
         {
             string data = string.Format("{0};{1};{2};{3};{4}", textBoxName.Text, textBoxLRV.Text, textBoxURV.Text,
                                                                                         textBoxAlarmL.Text, textBoxAlarmH.Text);
@@ -268,7 +270,7 @@ namespace Arbeidskrav_1
 
         //Save Monitord data function
         //Saves data currentley shown in "Monitoring" Tab
-        void dataSave()
+        void DataSave()
         {
             string dataType = "Scaled Values";
             string[] rawValues = { };
@@ -410,14 +412,14 @@ namespace Arbeidskrav_1
         {
             if (connected)
             {
-                disconnect();
+                Disconnect(sender,e);
             }
         }
 
         //Cals Save function for currently showing data in "Monitoring" Tab
         private void buttonSaveData_Click(object sender, EventArgs e)
         {
-            dataSave();
+            DataSave();
         }
 
         //Gets available serial ports
@@ -445,12 +447,12 @@ namespace Arbeidskrav_1
         //Saves Config to default location
         private void toolStripMenuItemSave_Click(object sender, EventArgs e)
         {
-            if (configCheck())
+            if (ConfigCheck())
             {
                 string fileName = string.Format("{0}_Config_V{1}.ssc", textBoxName.Text, version);
                 try
                 {
-                    File.WriteAllText(fileName, configMake());
+                    File.WriteAllText(fileName, ConfigMake());
                 }
                 catch (IOException)
                 {
@@ -467,7 +469,7 @@ namespace Arbeidskrav_1
             string configtxt = "";
             string[] config = { };
 
-            openFileDialog1.InitialDirectory = @"";
+            openFileDialog1.InitialDirectory = "";
             openFileDialog1.Filter = "ssc files (*.ssc)|*.ssc|All files (*.*)|*.*";
             openFileDialog1.FilterIndex = 0;
             openFileDialog1.RestoreDirectory = true;
@@ -490,7 +492,7 @@ namespace Arbeidskrav_1
         //Saves Config to chosen location
         private void toolStripMenuItemSaveAs_Click(object sender, EventArgs e)
         {
-            if (configCheck())
+            if (ConfigCheck())
             {
                 saveFileDialog1.InitialDirectory = "";
                 saveFileDialog1.Filter = "ssc files (*.ssc)|*.ssc|All files (*.*)|*.*";
@@ -504,7 +506,7 @@ namespace Arbeidskrav_1
 
                     try
                     {
-                        File.WriteAllText(fileName, configMake());
+                        File.WriteAllText(fileName, ConfigMake());
                     }
                     catch (IOException)
                     {
@@ -520,16 +522,13 @@ namespace Arbeidskrav_1
         {
             if (!serialPort1.IsOpen)
             {
-                disconnect();
+                Disconnect(sender,e);
                 string message = "Connection Lost!\nCheck Connection";
                 string caption = "Connection Error";
                 MessageBoxButtons buttons = MessageBoxButtons.OK;
                 MessageBoxIcon icon = MessageBoxIcon.Error;
                 MessageBox.Show(this, message, caption, buttons, icon);
-                if (monitorStart)
-                {
-                    buttonStop_Click(sender, e);
-                }
+                
             }
         }
         
@@ -704,7 +703,14 @@ namespace Arbeidskrav_1
                     }
                 }    
             }
-
+            if (writeconf || readconf)
+                timeout += 1;
+            if (timeout >= 4)
+            {
+                writeconf = false;
+                readconf = false;
+                timeout = 0;
+            }
             timerSend.Enabled = true;
             timerReceive.Enabled = false;
 
@@ -716,6 +722,7 @@ namespace Arbeidskrav_1
             if (!readconf && !writeconf)
             {
                 serialPort1.Write("readconf");
+                timeout = 0;
                 readconf = true;
             }
         }
@@ -725,9 +732,9 @@ namespace Arbeidskrav_1
         {
             if (!writeconf && !readconf)
             {
-                if (configCheck())
+                if (ConfigCheck())
                 {
-                    string data = configMake();
+                    string data = ConfigMake();
                     FormPassword passwordwindow = new FormPassword();
                     passwordwindow.ShowDialog(this);
                     if (!cancel)
@@ -744,6 +751,7 @@ namespace Arbeidskrav_1
                         }
                         serialPort1.Write(String.Format("writeconf>{0}>{1}", configPassword, data));
                         writeconf = true;
+                        timeout = 0;
                     }
 
                 }
@@ -794,16 +802,20 @@ namespace Arbeidskrav_1
             {
                 dataType = "Raw Values";   
             }
-            string message = String.Format("Do you want to save {0} to file?",dataType);
+            string message = String.Format("Do you want to Save {0} to file?", dataType);
             string caption = "Save Values?";
             MessageBoxButtons buttons = MessageBoxButtons.YesNo;
             MessageBoxIcon icon = MessageBoxIcon.Question;
             DialogResult result;
+            if (!connected)
+            {
+                message = String.Format("Connection Lost!\nDo you want to Save {0} to file?", dataType);
+            }
             result = MessageBox.Show(this, message, caption, buttons, icon);
             
             if (result == DialogResult.Yes)
             {
-                dataSave();
+                DataSave();
             }
             
         }   
@@ -955,7 +967,7 @@ namespace Arbeidskrav_1
                 }
                 else if (result == DialogResult.Yes)
                 {
-                    dataSave();
+                    DataSave();
                     e.Cancel = false;
                 }
             }
