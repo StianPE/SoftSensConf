@@ -52,7 +52,10 @@ namespace Arbeidskrav_1
             this.toolStripMenuItemAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabelConnection = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripProgressBarConnection = new System.Windows.Forms.ToolStripProgressBar();
+            this.toolStripStatusLabelMonitoring = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabelMStaus = new System.Windows.Forms.ToolStripStatusLabel();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.tabControl1 = new System.Windows.Forms.TabControl();
@@ -111,9 +114,6 @@ namespace Arbeidskrav_1
             this.timerSend = new System.Windows.Forms.Timer(this.components);
             this.timerReceive = new System.Windows.Forms.Timer(this.components);
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.toolStripStatusLabelMonitoring = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStripStatusLabelMStaus = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStripStatusLabelConnection = new System.Windows.Forms.ToolStripStatusLabel();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -227,10 +227,31 @@ namespace Arbeidskrav_1
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(73, 17);
             this.toolStripStatusLabel1.Text = "COM Status:";
             // 
+            // toolStripStatusLabelConnection
+            // 
+            this.toolStripStatusLabelConnection.Name = "toolStripStatusLabelConnection";
+            this.toolStripStatusLabelConnection.Size = new System.Drawing.Size(79, 17);
+            this.toolStripStatusLabelConnection.Text = "Disconnected";
+            // 
             // toolStripProgressBarConnection
             // 
             this.toolStripProgressBarConnection.Name = "toolStripProgressBarConnection";
             this.toolStripProgressBarConnection.Size = new System.Drawing.Size(100, 16);
+            // 
+            // toolStripStatusLabelMonitoring
+            // 
+            this.toolStripStatusLabelMonitoring.ForeColor = System.Drawing.SystemColors.InactiveCaptionText;
+            this.toolStripStatusLabelMonitoring.Name = "toolStripStatusLabelMonitoring";
+            this.toolStripStatusLabelMonitoring.Size = new System.Drawing.Size(129, 17);
+            this.toolStripStatusLabelMonitoring.Text = "        Monitoring Status:";
+            this.toolStripStatusLabelMonitoring.Visible = false;
+            // 
+            // toolStripStatusLabelMStaus
+            // 
+            this.toolStripStatusLabelMStaus.Name = "toolStripStatusLabelMStaus";
+            this.toolStripStatusLabelMStaus.Size = new System.Drawing.Size(32, 17);
+            this.toolStripStatusLabelMStaus.Text = "_____";
+            this.toolStripStatusLabelMStaus.Visible = false;
             // 
             // openFileDialog1
             // 
@@ -560,12 +581,18 @@ namespace Arbeidskrav_1
             "4800",
             "7200",
             "9600",
-            "14400"});
+            "14400",
+            "19200",
+            "38400",
+            "57600",
+            "128000",
+            "256000"});
             this.comboBoxBaudRate.Location = new System.Drawing.Point(82, 106);
             this.comboBoxBaudRate.Name = "comboBoxBaudRate";
             this.comboBoxBaudRate.Size = new System.Drawing.Size(121, 21);
             this.comboBoxBaudRate.TabIndex = 1;
             this.comboBoxBaudRate.Text = "9600";
+            this.comboBoxBaudRate.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxAlarmL_KeyPress);
             // 
             // buttonConnect
             // 
@@ -848,27 +875,6 @@ namespace Arbeidskrav_1
             // 
             this.timerReceive.Interval = 700;
             this.timerReceive.Tick += new System.EventHandler(this.timerReceive_Tick);
-            // 
-            // toolStripStatusLabelMonitoring
-            // 
-            this.toolStripStatusLabelMonitoring.ForeColor = System.Drawing.SystemColors.InactiveCaptionText;
-            this.toolStripStatusLabelMonitoring.Name = "toolStripStatusLabelMonitoring";
-            this.toolStripStatusLabelMonitoring.Size = new System.Drawing.Size(129, 17);
-            this.toolStripStatusLabelMonitoring.Text = "        Monitoring Status:";
-            this.toolStripStatusLabelMonitoring.Visible = false;
-            // 
-            // toolStripStatusLabelMStaus
-            // 
-            this.toolStripStatusLabelMStaus.Name = "toolStripStatusLabelMStaus";
-            this.toolStripStatusLabelMStaus.Size = new System.Drawing.Size(32, 17);
-            this.toolStripStatusLabelMStaus.Text = "_____";
-            this.toolStripStatusLabelMStaus.Visible = false;
-            // 
-            // toolStripStatusLabelConnection
-            // 
-            this.toolStripStatusLabelConnection.Name = "toolStripStatusLabelConnection";
-            this.toolStripStatusLabelConnection.Size = new System.Drawing.Size(79, 17);
-            this.toolStripStatusLabelConnection.Text = "Disconnected";
             // 
             // FormMain
             // 
