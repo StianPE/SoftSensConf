@@ -1,5 +1,5 @@
 ﻿
-namespace Arbeidskrav_1
+namespace SoftSensConf
 {
     partial class DefaultConfigSettings
     {

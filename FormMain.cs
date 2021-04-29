@@ -8,10 +8,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using System.Reflection;
+using System.Data.SqlClient;
+using System.Configuration;
 
 
 
-namespace Arbeidskrav_1
+namespace SoftSensConf
 {
     
     public partial class FormMain : Form
@@ -22,6 +25,31 @@ namespace Arbeidskrav_1
             InitializeComponent();
         }
 
+        string connectSS_DB = ConfigurationManager.ConnectionStrings["SoftSensDB_ConnectionString"].ConnectionString;
+        List<string> mesurement_ID = new List<string>();
+        List<int> iD = new List<int>();
+        List<string> tagName = new List<string>();
+        
+        List<string> mcu_ID = new List<string>();
+        List<string> mcu_Description = new List<string>();
+        List<string> rdc_ID = new List<string>();
+        List<string> rdc_Description = new List<string>();
+
+        List<string> dau_ID = new List<string>();
+        List<string> dau_Description = new List<string>();
+        List<string> com_Port = new List<string>();
+        List<string> bit_Rate = new List<string>();
+
+        List<string> name_Tag = new List<string>();
+        List<string> low_Range = new List<string>();
+        List<string> upper_Range = new List<string>();
+        List<string> alarm_Low = new List<string>();
+        List<string> alarm_High = new List<string>();
+        List<string> digial_Analog = new List<string>();
+        List<string> inn_Out = new List<string>();
+        List<string> scan_Frequencie = new List<string>();
+
+
         bool connected = false;
         string[] comPorts = System.IO.Ports.SerialPort.GetPortNames();
         string[] chartvalues = { };
@@ -31,11 +59,11 @@ namespace Arbeidskrav_1
         bool writeconf = false;
         bool monitorStart = false;
         bool monitor = true;
-        bool statuscheck = false;
+        bool statusCheck = false;
         bool monitorRead = true;
         bool statusRead = true;
-        string version = "1.0.1.3";
-        
+        string version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+
         double statusVal = 0;
         int statuscheckCounter = 0;
         int timeout = 0;
@@ -43,10 +71,18 @@ namespace Arbeidskrav_1
         int pointXValueScaled = 0;
         public static string configPassword = "";
         public static bool cancel = false;
-       
 
-        //Disconnects serial port
-        //Enables and disables bool values accordingly.
+        class SSC_DataBase 
+        {
+            public SSC_DataBase() { }
+
+            public List<string> table_ID { get; set; }
+            public List<string> table_FK { get; set; }
+            public List<string> table_Description { get; set; }
+        }
+
+        ///Disconnects serial port
+        ///Enables and disables bool values accordingly.
         void Disconnect(object sender, EventArgs e)
         {   
             
@@ -76,8 +112,8 @@ namespace Arbeidskrav_1
                 buttonStop_Click(sender,e);
         }
 
-        //Checks if entered config values are valid
-        bool ConfigCheck()
+        ///Checks if entered config values are valid
+        public bool ConfigCheck()
         {
             double fConVal = 0;
             int iConVal = 0;
@@ -259,22 +295,32 @@ namespace Arbeidskrav_1
             }
             return true;
         }
-
-        //Combines Config text boxes to a String
-        string ConfigMake()
+        
+        ///Combines Config text boxes to a String
+        public string ConfigMake()
         {
             string data = string.Format("{0};{1};{2};{3};{4}", textBoxName.Text, textBoxLRV.Text, textBoxURV.Text,
                                                                                         textBoxAlarmL.Text, textBoxAlarmH.Text);
             return data;
         }
 
-        //Save Monitord data function
-        //Saves data currentley shown in "Monitoring" Tab
-        void DataSave()
+        public bool COM_Check()
+        {
+            comPorts = System.IO.Ports.SerialPort.GetPortNames();
+
+            foreach (string port in comPorts)
+            {
+                if (port == comboBoxComPort.Text) return true;
+            }
+
+            return false;
+        }
+
+        ///Save Monitord data function
+        ///Saves data currentley shown in "Monitoring" Tab
+        public void DataSave()
         {
             string dataType = "Scaled Values";
-            string[] rawValues = { };
-            string[] scaledValues = { };
             string valuesText = "";
            
             if (checkBoxSignalRaw.Checked)
@@ -293,7 +339,6 @@ namespace Arbeidskrav_1
             {
 
                 int m = listBoxScaled.Items.Count;
-                scaledValues = new string[m + 1];
                 valuesText = System.DateTime.Now + ",Scaled\n";
 
                 for (int i = 0; i < m; i++)
@@ -330,6 +375,123 @@ namespace Arbeidskrav_1
             }
         }
 
+        public void SQL_Sensor_Data(string table, string column, string value)
+        {
+            string sqlQuery = string.Format("INSERT INTO {0} ({1}) VALUES ({2})", table, column, value);
+            System.Console.WriteLine("SQL_Table_Insert: " + sqlQuery);
+            SqlConnection connection = new SqlConnection(connectSS_DB);
+            SqlCommand command = new SqlCommand(sqlQuery, connection);
+            try
+            {
+                command.Parameters.AddWithValue(column, value);
+                connection.Open();
+                command.ExecuteNonQuery();
+                connection.Close();
+            }
+            catch (Exception er)
+            {
+                MessageBox.Show("Error in SQL_Sensor_Data: " + er);
+            }
+        }
+        public void SQL_INSERT_DATA(string table, string value)
+        {
+            string sqlQuery = string.Format("EXEC uspInsert{0} {1}", table, value);
+            System.Console.WriteLine("SQL_INSERT_DATA: " + sqlQuery);
+            
+            try
+            {
+                SqlConnection connection = new SqlConnection(connectSS_DB);
+                SqlCommand command = new SqlCommand(sqlQuery, connection);
+                connection.Open();
+                command.ExecuteNonQuery();
+                connection.Close();
+            }
+            catch (Exception er)
+            {
+                MessageBox.Show("Error in SQL_INSERT_DATA: " + er);
+            }
+        }
+
+        public int SQL_M_ID(string table, string column, string order)
+        {
+            int i_ID = 0;
+            try
+            {
+                SqlConnection connection = new SqlConnection(connectSS_DB);
+                string sqlQuery = string.Format("SELECT {0} FROM {1} ORDER BY {2} ASC",column,table,order);
+                System.Console.WriteLine("SQL_M_ID: "+sqlQuery);
+                SqlCommand command = new SqlCommand(sqlQuery, connection);
+                connection.Open();
+                SqlDataReader dataReader = command.ExecuteReader();
+                int i = 0;
+                while (dataReader.Read())
+                {
+                    mesurement_ID.Add(dataReader[0].ToString());
+                    tagName.Add(dataReader[1].ToString());
+                    iD.Add(i+1);
+                    i += 1;                   
+                }
+                connection.Close();
+                int n = 0;
+                foreach (int iD in iD)
+                {
+                    if (iD > i_ID && tagName[n] == textBoxCName.Text)
+                    {
+                        i_ID = iD;
+                    }
+                    n += 1;
+                }
+            }
+            catch (Exception error)
+            {
+                MessageBox.Show("Error in SQL_M_ID: " + error);
+            }
+
+            mesurement_ID.Clear();
+            tagName.Clear();
+            iD.Clear();
+
+            return i_ID;
+        }
+
+        public void SQL_Read_Config()
+        {
+            try
+            {
+                
+                string sqlQuery = "SELECT Low_Range_Value, Upper_Range_Value, Alarm_Low, Alarm_High, Digital_Analog, Inn_Out, Scan_frequencie FROM INSTRUMENT " +
+                             $"WHERE Instrument_Tag = '{comboBoxName_Tag.SelectedItem}' ORDER BY Instrument_Tag ASC";
+                SqlConnection connection = new SqlConnection(connectSS_DB);
+                Console.WriteLine(sqlQuery);
+                SqlCommand command = new SqlCommand(sqlQuery, connection);
+                connection.Open();
+                SqlDataReader dataReader = command.ExecuteReader();
+                while(dataReader.Read())
+                {
+                    low_Range.Add(dataReader[0].ToString());
+                    upper_Range.Add(dataReader[1].ToString());
+                    alarm_Low.Add(dataReader[2].ToString());
+                    alarm_High.Add(dataReader[3].ToString());
+                    digial_Analog.Add(dataReader[4].ToString());
+                    inn_Out.Add(dataReader[5].ToString());
+                    scan_Frequencie.Add(dataReader[6].ToString());
+                }
+                connection.Close();
+                textBoxLRV.Text = low_Range[0];
+                textBoxURV.Text = upper_Range[0];
+                textBoxAlarmL.Text = alarm_Low[0];
+                textBoxAlarmH.Text = alarm_High[0];
+                timerConnection.Interval = 1000 * int.Parse(scan_Frequencie[0]);
+
+            }
+            catch (Exception  error)
+            {
+
+                MessageBox.Show("Error in SQL_RED_Config: " + error);
+            }
+            
+        }
+
         //Closes program from strip menu 
         private void toolStripMenuItemExit_Click(object sender, EventArgs e)
         {
@@ -342,7 +504,7 @@ namespace Arbeidskrav_1
 
             comPorts = System.IO.Ports.SerialPort.GetPortNames();
             comboBoxComPort_Enter(sender, e);
-            if (comPorts.Length == 0 || comboBoxComPort.SelectedIndex < 0)
+            if (comPorts.Length == 0 || comboBoxComPort.Text.Length < 4 || !COM_Check())
             {
                 string message = "";
                 string caption = "Connection unsuccessful";
@@ -354,9 +516,9 @@ namespace Arbeidskrav_1
                 {
                     message = "No COM Ports detected\nCheck Connection";  
                 }
-                else if (comboBoxComPort.Text.Length < 3 || comboBoxComPort.SelectedIndex < 0)
+                else if (!COM_Check())
                 {
-                    message = "No COM Port selected";
+                    message = string.Format("{0} is not a valid Port",comboBoxComPort.Text);
                     comboBoxComPort.Focus();
                 }
                 result = MessageBox.Show(this, message, caption, buttons, icon);
@@ -371,7 +533,7 @@ namespace Arbeidskrav_1
                 MessageBoxIcon icon = MessageBoxIcon.Information;
                 DialogResult result;
 
-                serialPort1.PortName = comboBoxComPort.SelectedItem.ToString();
+                serialPort1.PortName = comboBoxComPort.Text;
                 serialPort1.BaudRate = Convert.ToInt32(comboBoxBaudRate.Text);
                 try
                 { serialPort1.Open(); }
@@ -403,7 +565,39 @@ namespace Arbeidskrav_1
                 
                 result = MessageBox.Show(this, message, caption, buttons, icon);
                 if (connected)
-                buttonRead_Click(this, e);
+                {
+                    buttonRead_Click(this, e);
+
+                    try
+                    {
+                        name_Tag.Clear();
+                        comboBoxName_Tag.Items.Clear();
+
+                        SqlConnection connection = new SqlConnection(connectSS_DB);
+                        string sqlQuery = $"SELECT Instrument_Tag FROM INSTRUMENT WHERE DAU_ID = {dau_ID[comboBoxDAU.SelectedIndex]} ORDER BY Instrument_Tag ASC";
+                        System.Console.WriteLine("SQL_INSTRUMENT: " + sqlQuery);
+                        SqlCommand command = new SqlCommand(sqlQuery, connection);
+                        connection.Open();
+                        SqlDataReader dataReader = command.ExecuteReader();
+
+                        while (dataReader.Read())
+                        {
+                            comboBoxName_Tag.Items.Add(dataReader[0].ToString());
+                        }
+
+                        connection.Close();
+                        if (name_Tag.Count > 0)
+                        {
+                            Console.WriteLine(name_Tag[0]);
+                            comboBoxName_Tag.Text = name_Tag[0];
+                        }
+                    }
+                    catch (Exception er)
+                    {
+                        MessageBox.Show("Error in SQL_INSTRUMENT_SELECT: " + er);
+                    }
+
+                }
             }
         }
 
@@ -431,7 +625,7 @@ namespace Arbeidskrav_1
             {
                 comboBoxComPort.Items.Add(item);
             }
-            if (comPorts.Length > 0 && comboBoxComPort.SelectedIndex < 0)
+            if (comPorts.Length > 0 && comboBoxComPort.SelectedIndex < 0 && comboBoxComPort.Text.Length < 4)
             {
                 comboBoxComPort.Text = comboBoxComPort.GetItemText(comPorts[0]);
             }
@@ -529,6 +723,7 @@ namespace Arbeidskrav_1
                 MessageBoxIcon icon = MessageBoxIcon.Error;
                 MessageBox.Show(this, message, caption, buttons, icon);
                 
+
             }
         }
         
@@ -541,7 +736,7 @@ namespace Arbeidskrav_1
                 
                 if (monitorStart)
                 {
-                    if (statuscheck && statusRead)
+                    if (statusCheck && statusRead)
                     {
                         monitor = false;
                         monitorRead = true;
@@ -628,7 +823,7 @@ namespace Arbeidskrav_1
                 }
                 else if (monitorStart)
                 {
-                    if (statuscheck)
+                    if (statusCheck)
                     {
                         monitor = true;
                         statusVal = Convert.ToInt32(indata);
@@ -637,45 +832,48 @@ namespace Arbeidskrav_1
                         {
                             textBoxIStatus.Text = "OK";
                             textBoxIStatus.ForeColor = Color.Green;
-                            pictureBoxSignalStatus.Image = Arbeidskrav_1.Properties.Resources.StatusOK_16x;
+                            pictureBoxSignalStatus.Image = SoftSensConf.Properties.Resources.StatusOK_16x;
                             toolStripStatusLabelMStaus.ForeColor = Color.Green;
                         }
                         else if (statusVal == 1)
                         {
                             textBoxIStatus.Text = "Fail";
                             textBoxIStatus.ForeColor = Color.Red;
-                            pictureBoxSignalStatus.Image = Arbeidskrav_1.Properties.Resources.StatusCriticalError_16x;
+                            pictureBoxSignalStatus.Image = SoftSensConf.Properties.Resources.StatusCriticalError_16x;
                             toolStripStatusLabelMStaus.ForeColor = Color.Red;
                         }
                         else if (statusVal == 2)
                         {                            
                             textBoxIStatus.Text = "Alarm Low";
                             textBoxIStatus.ForeColor = Color.Orange;
-                            pictureBoxSignalStatus.Image = Arbeidskrav_1.Properties.Resources.StatusWarning_16x;
+                            pictureBoxSignalStatus.Image = SoftSensConf.Properties.Resources.StatusWarning_16x;
                             toolStripStatusLabelMStaus.ForeColor = Color.Orange;
                         }
                         else if (statusVal == 3)
                         {
                             textBoxIStatus.Text = "Alarm High";
                             textBoxIStatus.ForeColor = Color.Orange;
-                            pictureBoxSignalStatus.Image = Arbeidskrav_1.Properties.Resources.StatusWarning_16x;
+                            pictureBoxSignalStatus.Image = SoftSensConf.Properties.Resources.StatusWarning_16x;
                             toolStripStatusLabelMStaus.ForeColor = Color.Orange;
                         }
                         toolStripStatusLabelMStaus.Text = textBoxIStatus.Text;
                         if (statusVal <= 3)
                         {
                             statuscheckCounter = 0;
-                            statuscheck = false;
+                            statusCheck = false;
                         }
                         statusRead = true;
 
                     }
                     else if (monitor)
                     {
+                        //string dateNow_YMD = string.Format("{0}/{1}/{2}", DateTime.Now.Year.ToString(), DateTime.Now.Month.ToString(), DateTime.Now.Day.ToString());
                         string timeNow = DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString() + ":" + DateTime.Now.Second.ToString();
-
+                        //string datetimeNow = dateNow_YMD +" "+ timeNow;
+                        
                         if (checkBoxSignalRaw.Checked)
-                        { 
+                        {
+                           
                             chartRaw.Series[0].Points.AddXY( timeNow , Convert.ToInt32(indata));
                             listBoxRaw.Items.Add(indata);
                             if (!indata.Contains("\r\n"))
@@ -685,7 +883,12 @@ namespace Arbeidskrav_1
                         }
                         else
                         {
-                            chartScaled.Series[0].Points.AddXY(timeNow, Convert.ToDouble(indata));
+                            int iD = 0;
+                            float i_indata = Convert.ToSingle(indata);
+                            SQL_Sensor_Data("SENSOR_DATA", "Instrument_Tag", "'" + textBoxCName.Text + "'");
+                            iD = SQL_M_ID("SENSOR_DATA", "Measurement_ID, Instrument_Tag", "Measurement_ID");
+                            SQL_INSERT_DATA("ANALOG_INPUT", string.Format("{0}, {1}", iD, i_indata));
+                            chartScaled.Series[0].Points.AddXY(timeNow, Convert.ToSingle(indata));
                             listBoxScaled.Items.Add(indata);
                             if (!indata.Contains("\r\n"))
                                 indata = indata + "\r\n";
@@ -698,7 +901,7 @@ namespace Arbeidskrav_1
 
                         if (statuscheckCounter == 5)
                         {
-                            statuscheck = true;
+                            statusCheck = true;
                         }
                     }
                 }    
@@ -714,6 +917,177 @@ namespace Arbeidskrav_1
             timerSend.Enabled = true;
             timerReceive.Enabled = false;
 
+        }
+
+        private void comboBoxMCU_Enter(object sender, EventArgs e)
+        {
+            mcu_ID.Clear();
+            mcu_Description.Clear();
+
+            try
+            {
+                SqlConnection connection = new SqlConnection(connectSS_DB);
+                string sqlQuery = "SELECT MCU_ID,Description FROM MCU ORDER BY MCU_ID ASC";
+                SqlCommand command = new SqlCommand(sqlQuery, connection);
+                connection.Open();
+                SqlDataReader dataReader = command.ExecuteReader();
+                while (dataReader.Read())
+                {
+                    mcu_ID.Add(dataReader[0].ToString());
+                    mcu_Description.Add(dataReader[1].ToString());
+                }
+                connection.Close();
+                comboBoxMCU.Items.Clear();
+
+                foreach (string id in mcu_Description)
+                {
+                    comboBoxMCU.Items.Add(id);
+                }
+
+            }
+            catch (Exception error)
+            {
+                MessageBox.Show("Error in MCU enter: " + error);
+            }
+        }
+
+        private void comboBoxRDC_Enter(object sender, EventArgs e)
+        {
+            rdc_ID.Clear();
+            rdc_Description.Clear();
+
+            try
+            {
+                if (comboBoxMCU.SelectedIndex >= 0)
+                {
+                    SqlConnection connection = new SqlConnection(connectSS_DB);
+                    string sqlQuery = "SELECT RDC_ID,Description FROM RDC WHERE MCU_ID ='" + mcu_ID[comboBoxMCU.SelectedIndex] + "' ORDER BY MCU_ID ASC";
+                    System.Console.WriteLine(sqlQuery);
+                    SqlCommand command = new SqlCommand(sqlQuery, connection);
+                    connection.Open();
+                    SqlDataReader dataReader = command.ExecuteReader();
+                    while (dataReader.Read())
+                    {
+                        rdc_ID.Add(dataReader[0].ToString());
+                        rdc_Description.Add(dataReader[1].ToString());
+                    }
+                    connection.Close();
+                    comboBoxRDC.Items.Clear();
+
+                    foreach (string id in rdc_Description)
+                    {
+                        comboBoxRDC.Items.Add(id);
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                MessageBox.Show("Error in RDC enter: " + error);
+            }
+        }
+
+        private void comboBoxDAU_Enter(object sender, EventArgs e)
+        {
+            dau_ID.Clear();
+            dau_Description.Clear();
+
+            try
+            {
+                SqlConnection connection = new SqlConnection(connectSS_DB);
+                if (comboBoxRDC.SelectedIndex >= 0)
+                {
+                    string sqlQuery = "SELECT DAU_ID,Description FROM DAU WHERE RDC_ID ='" + rdc_ID[comboBoxRDC.SelectedIndex] + "' ORDER BY DAU_ID ASC";
+                    System.Console.WriteLine(sqlQuery);
+                    SqlCommand command = new SqlCommand(sqlQuery, connection);
+                    
+                    connection.Open();
+                    SqlDataReader dataReader = command.ExecuteReader();
+                    while (dataReader.Read())
+                    {
+                        dau_ID.Add(dataReader[0].ToString());
+                        dau_Description.Add(dataReader[1].ToString());
+                    }
+
+                    connection.Close();
+                    comboBoxDAU.Items.Clear();
+                    
+                    foreach (string id in dau_Description)
+                    {
+                        comboBoxDAU.Items.Add(id);
+                    }
+                }                
+            }
+            catch (Exception error)
+            {
+                MessageBox.Show("Error in DAU enter: " + error);
+            }
+        }
+
+        private void comboBoxMCU_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            comboBoxRDC.Text = "";
+            comboBoxDAU.Text = "";
+        }
+
+        private void comboBoxRDC_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            comboBoxDAU.Text = "";
+        }
+
+        private void comboBoxDAU_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboBoxDAU.SelectedIndex >= 0 && comboBoxDAU.SelectedIndex <= dau_ID.Count && dau_ID.Count != 0)
+            {
+                try
+                {
+                    com_Port.Clear();
+                    bit_Rate.Clear();
+                    
+                    Console.WriteLine($"DAU_ID:{dau_ID[0]}\nSelected DAU Index:{comboBoxDAU.SelectedIndex}") ;
+                    SqlConnection connection = new SqlConnection(connectSS_DB);
+                    string sqlQuery = $"SELECT COM_Port, Bit_Rate FROM DAU WHERE DAU_ID = {dau_ID[comboBoxDAU.SelectedIndex]} ORDER BY COM_Port ASC";
+                    System.Console.WriteLine("SQL_DAU_SELECT: " + sqlQuery);
+                    SqlCommand command = new SqlCommand(sqlQuery, connection);
+                    connection.Open();
+                    SqlDataReader dataReader = command.ExecuteReader();
+                    int i = 0;
+                    while (dataReader.Read())
+                    {
+                        com_Port.Add(dataReader[0].ToString());
+                        bit_Rate.Add(dataReader[1].ToString());
+                        i ++;
+                    }
+                    Console.WriteLine(i);
+                    connection.Close();
+                    if (com_Port.Count > 0 && bit_Rate.Count > 0)
+                    {
+                        Console.WriteLine(com_Port[0]);
+                        comboBoxComPort.Text = com_Port[0];
+                        Console.WriteLine(bit_Rate[0]);
+                        comboBoxBaudRate.Text = bit_Rate[0];
+                    }
+                    
+                }
+                catch (Exception error)
+                {
+                    MessageBox.Show("Error in SQL_DAU_SELECT: " + error);
+                }
+                
+            }
+
+        }
+
+        private void comboBoxName_Tag_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (serialPort1.IsOpen)
+            {
+                SQL_Read_Config();
+            }
+        }
+
+        private void tabPageMonitoring_Enter(object sender, EventArgs e)
+        {
+            comboBoxDAU_Monitor.Text = comboBoxName_Tag.Text;
         }
 
         //Sends Read Config Request via the serial port
@@ -735,10 +1109,10 @@ namespace Arbeidskrav_1
                 if (ConfigCheck())
                 {
                     string data = ConfigMake();
-                    FormPassword passwordwindow = new FormPassword();
-                    passwordwindow.ShowDialog(this);
-                    if (!cancel)
-                    {
+                    //FormPassword passwordwindow = new FormPassword();
+                    //passwordwindow.ShowDialog(this);
+                    //if (!cancel)
+                    //{
                         string fileName = string.Format("Backup_Config_{0}_{1}.ssc", textBoxName.Text, version);
                         try
                         {
@@ -752,7 +1126,7 @@ namespace Arbeidskrav_1
                         serialPort1.Write(String.Format("writeconf>{0}>{1}", configPassword, data));
                         writeconf = true;
                         timeout = 0;
-                    }
+                    //}
 
                 }
             }
@@ -765,7 +1139,7 @@ namespace Arbeidskrav_1
             if (serialPort1.IsOpen && !writeconf && !readconf)
             {
                 monitorStart = true;
-                statuscheck = true;
+                statusCheck = true;
                 statusRead = true;
                 checkBoxSignalRaw.Enabled = false;
                 buttonWrite.Enabled = false;
@@ -782,42 +1156,18 @@ namespace Arbeidskrav_1
         private void buttonStop_Click(object sender, EventArgs e)
         {
             monitorStart = false;
-            statuscheck = false;
+            statusCheck = false;
             checkBoxSignalRaw.Enabled = true;
             buttonWrite.Enabled = true;
             buttonRead.Enabled = true;
             buttonStop.Enabled = false;
-            buttonSaveData.Enabled = true;
             toolStripStatusLabelMonitoring.Visible = false;
             toolStripStatusLabelMStaus.Visible = false;
-
-            string dataType = "Scaled Values";
 
             if (serialPort1.IsOpen)
             {
                 buttonStart.Enabled = true;
             }
-
-            if (checkBoxSignalRaw.Checked)
-            {
-                dataType = "Raw Values";   
-            }
-            string message = String.Format("Do you want to Save {0} to file?", dataType);
-            string caption = "Save Values?";
-            MessageBoxButtons buttons = MessageBoxButtons.YesNo;
-            MessageBoxIcon icon = MessageBoxIcon.Question;
-            DialogResult result;
-            if (!connected)
-            {
-                message = String.Format("Connection Lost!\nDo you want to Save {0} to file?", dataType);
-            }
-            result = MessageBox.Show(this, message, caption, buttons, icon);
-            
-            if (result == DialogResult.Yes)
-            {
-                DataSave();
-            }
-            
         }   
 
         //Changes data Type monitored
@@ -859,29 +1209,8 @@ namespace Arbeidskrav_1
         {
             if (!serialPort1.IsOpen)
             {
-                comboBoxComPort.Focus();
+                comboBoxMCU.Focus();
             }
-            if (!innit)
-            {
-                if (!File.Exists("Default_Config.ssc"))
-                {
-                    string line = "C385IT001;0.0;500.0;40;440";
-                    File.WriteAllText("Default_Config.ssc", line);
-                }
-                else
-                {
-                    string configtxt = File.ReadAllText("Default_Config.ssc");
-                    string[] config = configtxt.Split(';');
-                    textBoxName.Text = config[0];
-                    textBoxLRV.Text = config[1];
-                    textBoxURV.Text = config[2];
-                    textBoxAlarmL.Text = config[3];
-                    textBoxAlarmH.Text = config[4];
-                }
-                innit = true;
-            }
-
-
         }
 
         //Prevents user from entering invalid characters
@@ -902,6 +1231,7 @@ namespace Arbeidskrav_1
                 case '9':
                 case '-':
                 case '.':
+                case ',':
                 case '\b':
                     break;
                 default:
@@ -956,18 +1286,12 @@ namespace Arbeidskrav_1
         {
             if (monitorStart)
             {
-                string message = "You are monitoring do you want to Save and Exit?";
+                string message = "You are monitoring do you want Exit?";
                 string caption = "Exit Confirmation";
 
-                DialogResult result = MessageBox.Show(this, message, caption, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
-
-                if (result == DialogResult.Cancel)
+                DialogResult result = MessageBox.Show(this, message, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (result == DialogResult.Yes)
                 {
-                    e.Cancel = true;
-                }
-                else if (result == DialogResult.Yes)
-                {
-                    DataSave();
                     e.Cancel = false;
                 }
             }
@@ -1095,5 +1419,7 @@ namespace Arbeidskrav_1
             toolTip1.AutoPopDelay = 10000;
             toolTip1.SetToolTip(textBoxAlarmH, "Enter Alarm High Value (Only Integers)");
         }
+
+        
     }      
 }

@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Arbeidskrav_1
+namespace SoftSensConf
 {
     partial class AboutBoxSSC : Form
     {

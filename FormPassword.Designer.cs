@@ -1,6 +1,6 @@
 ﻿
-namespace Arbeidskrav_1
-{
+namespace SoftSensConf 
+{ 
     partial class FormPassword
     {
         /// <summary>
@@ -106,5 +106,5 @@ namespace Arbeidskrav_1
         private System.Windows.Forms.Button buttonPassword;
         private System.Windows.Forms.Label labelPassword;
         private System.Windows.Forms.Button buttonCancel;
-    }
+        }
 }

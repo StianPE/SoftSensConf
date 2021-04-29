@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 
-namespace Arbeidskrav_1
+namespace SoftSensConf
 {
     public partial class DefaultConfigSettings : Form
     {

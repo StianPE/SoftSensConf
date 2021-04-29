@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Arbeidskrav_1
+namespace SoftSensConf
 {
     public partial class FormPassword : Form
     {

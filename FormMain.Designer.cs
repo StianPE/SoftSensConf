@@ -1,5 +1,5 @@
 ﻿
-namespace Arbeidskrav_1
+namespace SoftSensConf
 {
     partial class FormMain
     {
@@ -84,6 +84,12 @@ namespace Arbeidskrav_1
             this.labelAlarmH = new System.Windows.Forms.Label();
             this.buttonRead = new System.Windows.Forms.Button();
             this.panelConnection = new System.Windows.Forms.Panel();
+            this.comboBoxMCU = new System.Windows.Forms.ComboBox();
+            this.labelMCU = new System.Windows.Forms.Label();
+            this.label_DAU = new System.Windows.Forms.Label();
+            this.label_RDC = new System.Windows.Forms.Label();
+            this.comboBoxDAU = new System.Windows.Forms.ComboBox();
+            this.comboBoxRDC = new System.Windows.Forms.ComboBox();
             this.labelConPanel = new System.Windows.Forms.Label();
             this.textBoxConnection = new System.Windows.Forms.TextBox();
             this.comboBoxComPort = new System.Windows.Forms.ComboBox();
@@ -94,6 +100,7 @@ namespace Arbeidskrav_1
             this.labelBaudRate = new System.Windows.Forms.Label();
             this.labelConnection = new System.Windows.Forms.Label();
             this.tabPageMonitoring = new System.Windows.Forms.TabPage();
+            this.comboBoxDAU_Monitor = new System.Windows.Forms.ComboBox();
             this.buttonSaveData = new System.Windows.Forms.Button();
             this.chartScaled = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.labelIStatus = new System.Windows.Forms.Label();
@@ -103,7 +110,7 @@ namespace Arbeidskrav_1
             this.pictureBoxSignalStatus = new System.Windows.Forms.PictureBox();
             this.listBoxScaled = new System.Windows.Forms.ListBox();
             this.listBoxRaw = new System.Windows.Forms.ListBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.labelSensorData = new System.Windows.Forms.Label();
             this.textBoxSensorData = new System.Windows.Forms.TextBox();
             this.checkBoxSignalRaw = new System.Windows.Forms.CheckBox();
             this.buttonStop = new System.Windows.Forms.Button();
@@ -114,6 +121,7 @@ namespace Arbeidskrav_1
             this.timerSend = new System.Windows.Forms.Timer(this.components);
             this.timerReceive = new System.Windows.Forms.Timer(this.components);
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.comboBoxName_Tag = new System.Windows.Forms.ComboBox();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -151,23 +159,29 @@ namespace Arbeidskrav_1
             // 
             // toolStripMenuItemOpen
             // 
+            this.toolStripMenuItemOpen.Enabled = false;
             this.toolStripMenuItemOpen.Name = "toolStripMenuItemOpen";
             this.toolStripMenuItemOpen.Size = new System.Drawing.Size(162, 22);
             this.toolStripMenuItemOpen.Text = "&Load Config";
+            this.toolStripMenuItemOpen.Visible = false;
             this.toolStripMenuItemOpen.Click += new System.EventHandler(this.toolStripMenuItemOpen_Click);
             // 
             // toolStripMenuItemSave
             // 
+            this.toolStripMenuItemSave.Enabled = false;
             this.toolStripMenuItemSave.Name = "toolStripMenuItemSave";
             this.toolStripMenuItemSave.Size = new System.Drawing.Size(162, 22);
             this.toolStripMenuItemSave.Text = "&Save Config";
+            this.toolStripMenuItemSave.Visible = false;
             this.toolStripMenuItemSave.Click += new System.EventHandler(this.toolStripMenuItemSave_Click);
             // 
             // toolStripMenuItemSaveAs
             // 
+            this.toolStripMenuItemSaveAs.Enabled = false;
             this.toolStripMenuItemSaveAs.Name = "toolStripMenuItemSaveAs";
             this.toolStripMenuItemSaveAs.Size = new System.Drawing.Size(162, 22);
             this.toolStripMenuItemSaveAs.Text = "Save Config &As...";
+            this.toolStripMenuItemSaveAs.Visible = false;
             this.toolStripMenuItemSaveAs.Click += new System.EventHandler(this.toolStripMenuItemSaveAs_Click);
             // 
             // toolStripMenuItemExit
@@ -284,6 +298,7 @@ namespace Arbeidskrav_1
             // 
             this.panelConfiguration.BackColor = System.Drawing.Color.WhiteSmoke;
             this.panelConfiguration.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelConfiguration.Controls.Add(this.comboBoxName_Tag);
             this.panelConfiguration.Controls.Add(this.labelInput);
             this.panelConfiguration.Controls.Add(this.labelConfPanel);
             this.panelConfiguration.Controls.Add(this.textBoxCAlarmL);
@@ -351,12 +366,14 @@ namespace Arbeidskrav_1
             // 
             // buttonLoad
             // 
+            this.buttonLoad.Enabled = false;
             this.buttonLoad.Location = new System.Drawing.Point(234, 217);
             this.buttonLoad.Name = "buttonLoad";
             this.buttonLoad.Size = new System.Drawing.Size(100, 23);
             this.buttonLoad.TabIndex = 32;
             this.buttonLoad.Text = "&Load";
             this.buttonLoad.UseVisualStyleBackColor = true;
+            this.buttonLoad.Visible = false;
             this.buttonLoad.Click += new System.EventHandler(this.toolStripMenuItemOpen_Click);
             this.buttonLoad.MouseHover += new System.EventHandler(this.buttonLoad_MouseHover);
             // 
@@ -495,12 +512,14 @@ namespace Arbeidskrav_1
             // 
             // buttonSave
             // 
+            this.buttonSave.Enabled = false;
             this.buttonSave.Location = new System.Drawing.Point(234, 246);
             this.buttonSave.Name = "buttonSave";
             this.buttonSave.Size = new System.Drawing.Size(100, 23);
             this.buttonSave.TabIndex = 35;
             this.buttonSave.Text = "&Save";
             this.buttonSave.UseVisualStyleBackColor = true;
+            this.buttonSave.Visible = false;
             this.buttonSave.Click += new System.EventHandler(this.toolStripMenuItemSaveAs_Click);
             this.buttonSave.MouseHover += new System.EventHandler(this.buttonSave_MouseHover);
             // 
@@ -529,6 +548,12 @@ namespace Arbeidskrav_1
             // 
             this.panelConnection.BackColor = System.Drawing.Color.WhiteSmoke;
             this.panelConnection.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelConnection.Controls.Add(this.comboBoxMCU);
+            this.panelConnection.Controls.Add(this.labelMCU);
+            this.panelConnection.Controls.Add(this.label_DAU);
+            this.panelConnection.Controls.Add(this.label_RDC);
+            this.panelConnection.Controls.Add(this.comboBoxDAU);
+            this.panelConnection.Controls.Add(this.comboBoxRDC);
             this.panelConnection.Controls.Add(this.labelConPanel);
             this.panelConnection.Controls.Add(this.textBoxConnection);
             this.panelConnection.Controls.Add(this.comboBoxComPort);
@@ -543,6 +568,63 @@ namespace Arbeidskrav_1
             this.panelConnection.Size = new System.Drawing.Size(236, 366);
             this.panelConnection.TabIndex = 44;
             // 
+            // comboBoxMCU
+            // 
+            this.comboBoxMCU.FormattingEnabled = true;
+            this.comboBoxMCU.Location = new System.Drawing.Point(90, 71);
+            this.comboBoxMCU.Name = "comboBoxMCU";
+            this.comboBoxMCU.Size = new System.Drawing.Size(121, 21);
+            this.comboBoxMCU.TabIndex = 13;
+            this.comboBoxMCU.SelectedIndexChanged += new System.EventHandler(this.comboBoxMCU_SelectedIndexChanged);
+            this.comboBoxMCU.Enter += new System.EventHandler(this.comboBoxMCU_Enter);
+            // 
+            // labelMCU
+            // 
+            this.labelMCU.AutoSize = true;
+            this.labelMCU.Location = new System.Drawing.Point(16, 74);
+            this.labelMCU.Name = "labelMCU";
+            this.labelMCU.Size = new System.Drawing.Size(31, 13);
+            this.labelMCU.TabIndex = 12;
+            this.labelMCU.Text = "MCU";
+            // 
+            // label_DAU
+            // 
+            this.label_DAU.AutoSize = true;
+            this.label_DAU.Location = new System.Drawing.Point(16, 127);
+            this.label_DAU.Name = "label_DAU";
+            this.label_DAU.Size = new System.Drawing.Size(30, 13);
+            this.label_DAU.TabIndex = 11;
+            this.label_DAU.Text = "DAU";
+            // 
+            // label_RDC
+            // 
+            this.label_RDC.AutoSize = true;
+            this.label_RDC.Location = new System.Drawing.Point(16, 100);
+            this.label_RDC.Name = "label_RDC";
+            this.label_RDC.Size = new System.Drawing.Size(33, 13);
+            this.label_RDC.TabIndex = 10;
+            this.label_RDC.Text = "RDC ";
+            // 
+            // comboBoxDAU
+            // 
+            this.comboBoxDAU.FormattingEnabled = true;
+            this.comboBoxDAU.Location = new System.Drawing.Point(90, 124);
+            this.comboBoxDAU.Name = "comboBoxDAU";
+            this.comboBoxDAU.Size = new System.Drawing.Size(121, 21);
+            this.comboBoxDAU.TabIndex = 9;
+            this.comboBoxDAU.SelectedIndexChanged += new System.EventHandler(this.comboBoxDAU_SelectedIndexChanged);
+            this.comboBoxDAU.Enter += new System.EventHandler(this.comboBoxDAU_Enter);
+            // 
+            // comboBoxRDC
+            // 
+            this.comboBoxRDC.FormattingEnabled = true;
+            this.comboBoxRDC.Location = new System.Drawing.Point(90, 97);
+            this.comboBoxRDC.Name = "comboBoxRDC";
+            this.comboBoxRDC.Size = new System.Drawing.Size(121, 21);
+            this.comboBoxRDC.TabIndex = 8;
+            this.comboBoxRDC.SelectedIndexChanged += new System.EventHandler(this.comboBoxRDC_SelectedIndexChanged);
+            this.comboBoxRDC.Enter += new System.EventHandler(this.comboBoxRDC_Enter);
+            // 
             // labelConPanel
             // 
             this.labelConPanel.AutoSize = true;
@@ -555,7 +637,7 @@ namespace Arbeidskrav_1
             // 
             // textBoxConnection
             // 
-            this.textBoxConnection.Location = new System.Drawing.Point(82, 133);
+            this.textBoxConnection.Location = new System.Drawing.Point(90, 207);
             this.textBoxConnection.Name = "textBoxConnection";
             this.textBoxConnection.ReadOnly = true;
             this.textBoxConnection.Size = new System.Drawing.Size(121, 20);
@@ -566,7 +648,7 @@ namespace Arbeidskrav_1
             // comboBoxComPort
             // 
             this.comboBoxComPort.FormattingEnabled = true;
-            this.comboBoxComPort.Location = new System.Drawing.Point(82, 79);
+            this.comboBoxComPort.Location = new System.Drawing.Point(90, 153);
             this.comboBoxComPort.Name = "comboBoxComPort";
             this.comboBoxComPort.Size = new System.Drawing.Size(121, 21);
             this.comboBoxComPort.TabIndex = 0;
@@ -587,7 +669,7 @@ namespace Arbeidskrav_1
             "57600",
             "128000",
             "256000"});
-            this.comboBoxBaudRate.Location = new System.Drawing.Point(82, 106);
+            this.comboBoxBaudRate.Location = new System.Drawing.Point(90, 180);
             this.comboBoxBaudRate.Name = "comboBoxBaudRate";
             this.comboBoxBaudRate.Size = new System.Drawing.Size(121, 21);
             this.comboBoxBaudRate.TabIndex = 1;
@@ -596,7 +678,7 @@ namespace Arbeidskrav_1
             // 
             // buttonConnect
             // 
-            this.buttonConnect.Location = new System.Drawing.Point(128, 159);
+            this.buttonConnect.Location = new System.Drawing.Point(136, 233);
             this.buttonConnect.Name = "buttonConnect";
             this.buttonConnect.Size = new System.Drawing.Size(75, 23);
             this.buttonConnect.TabIndex = 2;
@@ -608,7 +690,7 @@ namespace Arbeidskrav_1
             // buttonDisconnect
             // 
             this.buttonDisconnect.Enabled = false;
-            this.buttonDisconnect.Location = new System.Drawing.Point(128, 188);
+            this.buttonDisconnect.Location = new System.Drawing.Point(136, 262);
             this.buttonDisconnect.Name = "buttonDisconnect";
             this.buttonDisconnect.Size = new System.Drawing.Size(75, 23);
             this.buttonDisconnect.TabIndex = 3;
@@ -620,7 +702,7 @@ namespace Arbeidskrav_1
             // labelComPort
             // 
             this.labelComPort.AutoSize = true;
-            this.labelComPort.Location = new System.Drawing.Point(8, 82);
+            this.labelComPort.Location = new System.Drawing.Point(16, 156);
             this.labelComPort.Name = "labelComPort";
             this.labelComPort.Size = new System.Drawing.Size(56, 13);
             this.labelComPort.TabIndex = 4;
@@ -629,7 +711,7 @@ namespace Arbeidskrav_1
             // labelBaudRate
             // 
             this.labelBaudRate.AutoSize = true;
-            this.labelBaudRate.Location = new System.Drawing.Point(8, 109);
+            this.labelBaudRate.Location = new System.Drawing.Point(16, 183);
             this.labelBaudRate.Name = "labelBaudRate";
             this.labelBaudRate.Size = new System.Drawing.Size(61, 13);
             this.labelBaudRate.TabIndex = 5;
@@ -638,7 +720,7 @@ namespace Arbeidskrav_1
             // labelConnection
             // 
             this.labelConnection.AutoSize = true;
-            this.labelConnection.Location = new System.Drawing.Point(8, 136);
+            this.labelConnection.Location = new System.Drawing.Point(16, 210);
             this.labelConnection.Name = "labelConnection";
             this.labelConnection.Size = new System.Drawing.Size(40, 13);
             this.labelConnection.TabIndex = 6;
@@ -646,6 +728,7 @@ namespace Arbeidskrav_1
             // 
             // tabPageMonitoring
             // 
+            this.tabPageMonitoring.Controls.Add(this.comboBoxDAU_Monitor);
             this.tabPageMonitoring.Controls.Add(this.buttonSaveData);
             this.tabPageMonitoring.Controls.Add(this.chartScaled);
             this.tabPageMonitoring.Controls.Add(this.labelIStatus);
@@ -655,7 +738,7 @@ namespace Arbeidskrav_1
             this.tabPageMonitoring.Controls.Add(this.pictureBoxSignalStatus);
             this.tabPageMonitoring.Controls.Add(this.listBoxScaled);
             this.tabPageMonitoring.Controls.Add(this.listBoxRaw);
-            this.tabPageMonitoring.Controls.Add(this.label1);
+            this.tabPageMonitoring.Controls.Add(this.labelSensorData);
             this.tabPageMonitoring.Controls.Add(this.textBoxSensorData);
             this.tabPageMonitoring.Controls.Add(this.checkBoxSignalRaw);
             this.tabPageMonitoring.Controls.Add(this.buttonStop);
@@ -667,16 +750,26 @@ namespace Arbeidskrav_1
             this.tabPageMonitoring.TabIndex = 2;
             this.tabPageMonitoring.Text = "Monitoring";
             this.tabPageMonitoring.UseVisualStyleBackColor = true;
+            this.tabPageMonitoring.Enter += new System.EventHandler(this.tabPageMonitoring_Enter);
+            // 
+            // comboBoxDAU_Monitor
+            // 
+            this.comboBoxDAU_Monitor.FormattingEnabled = true;
+            this.comboBoxDAU_Monitor.Location = new System.Drawing.Point(3, 17);
+            this.comboBoxDAU_Monitor.Name = "comboBoxDAU_Monitor";
+            this.comboBoxDAU_Monitor.Size = new System.Drawing.Size(121, 21);
+            this.comboBoxDAU_Monitor.TabIndex = 18;
             // 
             // buttonSaveData
             // 
             this.buttonSaveData.Enabled = false;
-            this.buttonSaveData.Location = new System.Drawing.Point(8, 335);
+            this.buttonSaveData.Location = new System.Drawing.Point(3, 354);
             this.buttonSaveData.Name = "buttonSaveData";
-            this.buttonSaveData.Size = new System.Drawing.Size(116, 23);
+            this.buttonSaveData.Size = new System.Drawing.Size(121, 23);
             this.buttonSaveData.TabIndex = 17;
             this.buttonSaveData.Text = "Save";
             this.buttonSaveData.UseVisualStyleBackColor = true;
+            this.buttonSaveData.Visible = false;
             this.buttonSaveData.Click += new System.EventHandler(this.buttonSaveData_Click);
             this.buttonSaveData.MouseHover += new System.EventHandler(this.buttonSaveData_MouseHover);
             // 
@@ -689,7 +782,7 @@ namespace Arbeidskrav_1
             this.chartScaled.Enabled = false;
             legend1.Name = "Legend1";
             this.chartScaled.Legends.Add(legend1);
-            this.chartScaled.Location = new System.Drawing.Point(130, 3);
+            this.chartScaled.Location = new System.Drawing.Point(133, 44);
             this.chartScaled.Name = "chartScaled";
             series1.ChartArea = "ChartArea1";
             series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
@@ -697,7 +790,7 @@ namespace Arbeidskrav_1
             series1.LegendText = "Scaled";
             series1.Name = "Scaled";
             this.chartScaled.Series.Add(series1);
-            this.chartScaled.Size = new System.Drawing.Size(666, 378);
+            this.chartScaled.Size = new System.Drawing.Size(663, 337);
             this.chartScaled.TabIndex = 15;
             this.chartScaled.TabStop = false;
             this.chartScaled.Text = "chart2";
@@ -708,7 +801,7 @@ namespace Arbeidskrav_1
             // labelIStatus
             // 
             this.labelIStatus.AutoSize = true;
-            this.labelIStatus.Location = new System.Drawing.Point(5, 97);
+            this.labelIStatus.Location = new System.Drawing.Point(5, 119);
             this.labelIStatus.Name = "labelIStatus";
             this.labelIStatus.Size = new System.Drawing.Size(95, 13);
             this.labelIStatus.TabIndex = 14;
@@ -718,10 +811,10 @@ namespace Arbeidskrav_1
             // 
             this.textBoxIStatus.BackColor = System.Drawing.SystemColors.Window;
             this.textBoxIStatus.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.textBoxIStatus.Location = new System.Drawing.Point(8, 116);
+            this.textBoxIStatus.Location = new System.Drawing.Point(3, 135);
             this.textBoxIStatus.Name = "textBoxIStatus";
             this.textBoxIStatus.ReadOnly = true;
-            this.textBoxIStatus.Size = new System.Drawing.Size(116, 20);
+            this.textBoxIStatus.Size = new System.Drawing.Size(121, 20);
             this.textBoxIStatus.TabIndex = 13;
             this.textBoxIStatus.TabStop = false;
             this.textBoxIStatus.Text = "-";
@@ -729,7 +822,7 @@ namespace Arbeidskrav_1
             // labelScaled
             // 
             this.labelScaled.AutoSize = true;
-            this.labelScaled.Location = new System.Drawing.Point(8, 205);
+            this.labelScaled.Location = new System.Drawing.Point(5, 224);
             this.labelScaled.Name = "labelScaled";
             this.labelScaled.Size = new System.Drawing.Size(40, 13);
             this.labelScaled.TabIndex = 9;
@@ -738,7 +831,7 @@ namespace Arbeidskrav_1
             // labelRaw
             // 
             this.labelRaw.AutoSize = true;
-            this.labelRaw.Location = new System.Drawing.Point(5, 205);
+            this.labelRaw.Location = new System.Drawing.Point(5, 224);
             this.labelRaw.Name = "labelRaw";
             this.labelRaw.Size = new System.Drawing.Size(29, 13);
             this.labelRaw.TabIndex = 8;
@@ -747,58 +840,58 @@ namespace Arbeidskrav_1
             // 
             // pictureBoxSignalStatus
             // 
-            this.pictureBoxSignalStatus.ErrorImage = global::Arbeidskrav_1.Properties.Resources.StatusCriticalError_16x;
-            this.pictureBoxSignalStatus.Image = global::Arbeidskrav_1.Properties.Resources.StatusOffline_16x;
-            this.pictureBoxSignalStatus.InitialImage = global::Arbeidskrav_1.Properties.Resources.StatusOK_16x;
-            this.pictureBoxSignalStatus.Location = new System.Drawing.Point(108, 97);
+            this.pictureBoxSignalStatus.ErrorImage = global::SoftSensConf.Properties.Resources.StatusCriticalError_16x;
+            this.pictureBoxSignalStatus.Image = global::SoftSensConf.Properties.Resources.StatusOffline_16x;
+            this.pictureBoxSignalStatus.InitialImage = global::SoftSensConf.Properties.Resources.StatusOK_16x;
+            this.pictureBoxSignalStatus.Location = new System.Drawing.Point(106, 119);
             this.pictureBoxSignalStatus.Name = "pictureBoxSignalStatus";
-            this.pictureBoxSignalStatus.Size = new System.Drawing.Size(16, 16);
+            this.pictureBoxSignalStatus.Size = new System.Drawing.Size(21, 16);
             this.pictureBoxSignalStatus.TabIndex = 16;
             this.pictureBoxSignalStatus.TabStop = false;
             // 
             // listBoxScaled
             // 
             this.listBoxScaled.FormattingEnabled = true;
-            this.listBoxScaled.Location = new System.Drawing.Point(8, 221);
+            this.listBoxScaled.Location = new System.Drawing.Point(3, 240);
             this.listBoxScaled.Name = "listBoxScaled";
-            this.listBoxScaled.Size = new System.Drawing.Size(116, 108);
+            this.listBoxScaled.Size = new System.Drawing.Size(121, 108);
             this.listBoxScaled.TabIndex = 7;
             this.listBoxScaled.TabStop = false;
             // 
             // listBoxRaw
             // 
             this.listBoxRaw.FormattingEnabled = true;
-            this.listBoxRaw.Location = new System.Drawing.Point(8, 221);
+            this.listBoxRaw.Location = new System.Drawing.Point(3, 240);
             this.listBoxRaw.Name = "listBoxRaw";
-            this.listBoxRaw.Size = new System.Drawing.Size(116, 108);
+            this.listBoxRaw.Size = new System.Drawing.Size(121, 108);
             this.listBoxRaw.TabIndex = 6;
             this.listBoxRaw.TabStop = false;
             this.listBoxRaw.Visible = false;
             // 
-            // label1
+            // labelSensorData
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(5, 139);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(64, 13);
-            this.label1.TabIndex = 5;
-            this.label1.Text = "Sensor data";
+            this.labelSensorData.AutoSize = true;
+            this.labelSensorData.Location = new System.Drawing.Point(3, 158);
+            this.labelSensorData.Name = "labelSensorData";
+            this.labelSensorData.Size = new System.Drawing.Size(64, 13);
+            this.labelSensorData.TabIndex = 5;
+            this.labelSensorData.Text = "Sensor data";
             // 
             // textBoxSensorData
             // 
-            this.textBoxSensorData.Location = new System.Drawing.Point(8, 155);
+            this.textBoxSensorData.Location = new System.Drawing.Point(3, 174);
             this.textBoxSensorData.Multiline = true;
             this.textBoxSensorData.Name = "textBoxSensorData";
             this.textBoxSensorData.ReadOnly = true;
             this.textBoxSensorData.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxSensorData.Size = new System.Drawing.Size(116, 47);
+            this.textBoxSensorData.Size = new System.Drawing.Size(121, 47);
             this.textBoxSensorData.TabIndex = 4;
             this.textBoxSensorData.TabStop = false;
             // 
             // checkBoxSignalRaw
             // 
             this.checkBoxSignalRaw.AutoSize = true;
-            this.checkBoxSignalRaw.Location = new System.Drawing.Point(8, 70);
+            this.checkBoxSignalRaw.Location = new System.Drawing.Point(3, 102);
             this.checkBoxSignalRaw.Name = "checkBoxSignalRaw";
             this.checkBoxSignalRaw.Size = new System.Drawing.Size(116, 17);
             this.checkBoxSignalRaw.TabIndex = 3;
@@ -810,9 +903,9 @@ namespace Arbeidskrav_1
             // buttonStop
             // 
             this.buttonStop.Enabled = false;
-            this.buttonStop.Location = new System.Drawing.Point(8, 41);
+            this.buttonStop.Location = new System.Drawing.Point(3, 73);
             this.buttonStop.Name = "buttonStop";
-            this.buttonStop.Size = new System.Drawing.Size(116, 23);
+            this.buttonStop.Size = new System.Drawing.Size(121, 23);
             this.buttonStop.TabIndex = 2;
             this.buttonStop.Text = "Stop";
             this.buttonStop.UseVisualStyleBackColor = true;
@@ -822,9 +915,9 @@ namespace Arbeidskrav_1
             // buttonStart
             // 
             this.buttonStart.Enabled = false;
-            this.buttonStart.Location = new System.Drawing.Point(8, 12);
+            this.buttonStart.Location = new System.Drawing.Point(3, 44);
             this.buttonStart.Name = "buttonStart";
-            this.buttonStart.Size = new System.Drawing.Size(116, 23);
+            this.buttonStart.Size = new System.Drawing.Size(121, 23);
             this.buttonStart.TabIndex = 1;
             this.buttonStart.Text = "Start ";
             this.buttonStart.UseVisualStyleBackColor = true;
@@ -839,7 +932,7 @@ namespace Arbeidskrav_1
             this.chartRaw.ChartAreas.Add(chartArea2);
             legend2.Name = "Legend1";
             this.chartRaw.Legends.Add(legend2);
-            this.chartRaw.Location = new System.Drawing.Point(130, 3);
+            this.chartRaw.Location = new System.Drawing.Point(133, 44);
             this.chartRaw.Name = "chartRaw";
             series2.ChartArea = "ChartArea1";
             series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
@@ -852,7 +945,7 @@ namespace Arbeidskrav_1
             series3.Name = "Scaled";
             this.chartRaw.Series.Add(series2);
             this.chartRaw.Series.Add(series3);
-            this.chartRaw.Size = new System.Drawing.Size(662, 378);
+            this.chartRaw.Size = new System.Drawing.Size(659, 337);
             this.chartRaw.TabIndex = 0;
             this.chartRaw.TabStop = false;
             this.chartRaw.Text = "chart1";
@@ -875,6 +968,15 @@ namespace Arbeidskrav_1
             // 
             this.timerReceive.Interval = 700;
             this.timerReceive.Tick += new System.EventHandler(this.timerReceive_Tick);
+            // 
+            // comboBoxName_Tag
+            // 
+            this.comboBoxName_Tag.FormattingEnabled = true;
+            this.comboBoxName_Tag.Location = new System.Drawing.Point(234, 86);
+            this.comboBoxName_Tag.Name = "comboBoxName_Tag";
+            this.comboBoxName_Tag.Size = new System.Drawing.Size(100, 21);
+            this.comboBoxName_Tag.TabIndex = 45;
+            this.comboBoxName_Tag.SelectedIndexChanged += new System.EventHandler(this.comboBoxName_Tag_SelectedIndexChanged);
             // 
             // FormMain
             // 
@@ -936,7 +1038,7 @@ namespace Arbeidskrav_1
         private System.Windows.Forms.Timer timerSend;
         private System.Windows.Forms.Timer timerReceive;
         private System.Windows.Forms.TabPage tabPageMonitoring;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label labelSensorData;
         private System.Windows.Forms.TextBox textBoxSensorData;
         private System.Windows.Forms.CheckBox checkBoxSignalRaw;
         private System.Windows.Forms.Button buttonStop;
@@ -990,6 +1092,14 @@ namespace Arbeidskrav_1
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelMonitoring;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelMStaus;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelConnection;
+        private System.Windows.Forms.ComboBox comboBoxDAU_Monitor;
+        private System.Windows.Forms.Label label_DAU;
+        private System.Windows.Forms.Label label_RDC;
+        private System.Windows.Forms.ComboBox comboBoxDAU;
+        private System.Windows.Forms.ComboBox comboBoxRDC;
+        private System.Windows.Forms.Label labelMCU;
+        private System.Windows.Forms.ComboBox comboBoxMCU;
+        private System.Windows.Forms.ComboBox comboBoxName_Tag;
     }
 }
 
