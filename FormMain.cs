@@ -49,67 +49,61 @@ namespace SoftSensConf
         List<string> inn_Out = new List<string>();
         List<string> scan_Frequencie = new List<string>();
 
+        string old_MCU = "";
+        string old_RDC = "";
+        string old_DAU = "";
 
         bool connected = false;
         string[] comPorts = System.IO.Ports.SerialPort.GetPortNames();
         string[] chartvalues = { };
         string indata = "";
-        bool innit = false;
+        bool newConf = false;
         bool readconf = false;
         bool writeconf = false;
         bool monitorStart = false;
         bool monitor = true;
         bool statusCheck = false;
-        bool monitorRead = true;
-        bool statusRead = true;
+        bool send = true;
         string version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
         double statusVal = 0;
         int statuscheckCounter = 0;
-        int timeout = 0;
-        int pointXValueRaw = 0;
-        int pointXValueScaled = 0;
-        public static string configPassword = "";
+        public static string configPassword = "password";
         public static bool cancel = false;
-
-        class SSC_DataBase 
-        {
-            public SSC_DataBase() { }
-
-            public List<string> table_ID { get; set; }
-            public List<string> table_FK { get; set; }
-            public List<string> table_Description { get; set; }
-        }
 
         ///Disconnects serial port
         ///Enables and disables bool values accordingly.
         void Disconnect(object sender, EventArgs e)
-        {   
-            
+        {
             serialPort1.Close();
             connected = false;
-            textBoxConnection.Text = "Disconnected";          
+            textBoxConnection.Text = "Disconnected";
             toolStripStatusLabelConnection.Text = "Disconnected";
             toolStripStatusLabelConnection.ForeColor = Color.Red;
             toolStripProgressBarConnection.Value = 0;
             timerConnection.Enabled = false;
-            buttonRead.Enabled = false;
-            buttonWrite.Enabled = false;
+            timerCommunication.Enabled = false;
+            timerDataBase.Enabled = false;
             buttonStart.Enabled = false;
             buttonStop.Enabled = false;
             buttonConnect.Enabled = true;
             buttonDisconnect.Enabled = false;
-            timerReceive.Enabled = false;
-            timerSend.Enabled = false;
             readconf = false;
             writeconf = false;
-            textBoxCName.Text = "";
-            textBoxCLRV.Text = "";
-            textBoxCURV.Text = "";
-            textBoxCAlarmL.Text = "";
-            textBoxCAlarmH.Text = "";
+            comboBoxMCU.Enabled = true;
+            comboBoxRDC.Enabled = true;
+            comboBoxDAU.Enabled = true;
+            comboBoxBaudRate.Enabled = true;
+            comboBoxComPort.Enabled = true;
+            textBoxCName.Clear();
+            textBoxCLRV.Clear();
+            textBoxCURV.Clear();
+            textBoxCAlarmL.Clear();
+            textBoxCAlarmH.Clear();
+            textBoxCFrequencie.Clear();
+            textBoxCAnalog_Digital.Clear();
             if (monitorStart)
-                buttonStop_Click(sender,e);
+                buttonStop_Click(sender, e);
         }
 
         ///Checks if entered config values are valid
@@ -189,7 +183,7 @@ namespace SoftSensConf
             catch(OverflowException)
             {
                 caption = "Invalid value entered";
-                message = "Entered value is too Long";
+                message = "Low Range Value Entered is too Long (Over Flow Error)";
                 result = MessageBox.Show(this, message, caption, buttons, icon);
                 textBoxLRV.Focus();
                 return false;
@@ -197,7 +191,7 @@ namespace SoftSensConf
             if (fConVal > 9999 || fConVal < -9000)
             {
                 caption = "Invalid value entered";
-                message = "Entered value is too Big/Smal";
+                message = "Low Range Value Entered is too Big/Smal";
                 result = MessageBox.Show(this, message, caption, buttons, icon);
                 textBoxLRV.Focus();
                 return false;
@@ -210,7 +204,7 @@ namespace SoftSensConf
             {
                 icon = MessageBoxIcon.Error;
                 caption = "Format Error";
-                message = "Invalid Value \n(Unable to Format string)";
+                message = "Upper Range Value Invalid \n(Unable to Format string)";
                 result = MessageBox.Show(this, message, caption, buttons, icon);
                 textBoxURV.Focus();
                 return false;
@@ -218,7 +212,7 @@ namespace SoftSensConf
             catch(OverflowException)
             {
                 caption = "Invalid value entered";
-                message = "Entered value is too Long";
+                message = "Upper Range Value Entered is too Long (Over Flow Error)";
                 result = MessageBox.Show(this, message, caption, buttons, icon);
                 textBoxURV.Focus();
                 return false;
@@ -226,7 +220,7 @@ namespace SoftSensConf
             if (fConVal > 9999)
             {
                 caption = "Invalid value entered";
-                message = "Entered value is too Big";
+                message = "Upper Range value is too Big";
                 result = MessageBox.Show(this, message, caption, buttons, icon);
                 textBoxURV.Focus();
                 return false;
@@ -239,7 +233,7 @@ namespace SoftSensConf
             {
                 icon = MessageBoxIcon.Error;
                 caption = "Format Error";
-                message = "Invalid Value \n(Unable to Format string)";
+                message = "Alarm Low Value Invalid \n(Unable to Format string)";
                 result = MessageBox.Show(this, message, caption, buttons, icon);
                 textBoxAlarmL.Focus();
                 return false;
@@ -247,7 +241,7 @@ namespace SoftSensConf
             catch (OverflowException)
             {
                 caption = "Invalid value entered";
-                message = "Entered value is too Long";
+                message = "Alarm Low Value Entered is too Long (Over Flow Error)";
                 result = MessageBox.Show(this, message, caption, buttons, icon);
                 textBoxAlarmL.Focus();
                 return false;
@@ -270,7 +264,7 @@ namespace SoftSensConf
             {
                 icon = MessageBoxIcon.Error;
                 caption = "Format Error";
-                message = "Invalid Value \n(Unable to Format string)";
+                message = "Alarm High Value Invalid \n(Unable to Format string)";
                 result = MessageBox.Show(this, message, caption, buttons, icon);
                 textBoxAlarmH.Focus();
                 return false;
@@ -278,7 +272,7 @@ namespace SoftSensConf
             catch (OverflowException)
             {
                 caption = "Invalid value entered";
-                message = "Entered value is too Long";
+                message = "Alarm High Entered value is too Long (Over Flow Error)";
                 result = MessageBox.Show(this, message, caption, buttons, icon);
                 textBoxAlarmH.Focus();
                 return false;
@@ -288,7 +282,7 @@ namespace SoftSensConf
             {
                 icon = MessageBoxIcon.Error;
                 caption = "Format Error";
-                message = "Invalid Value \n(Unable to Format string)";
+                message = "Alarm High VAlue Invalid \n(Unable to Format string)";
                 result = MessageBox.Show(this, message, caption, buttons, icon);
                 textBoxAlarmH.Focus();
                 return false;
@@ -304,6 +298,16 @@ namespace SoftSensConf
             return data;
         }
 
+        public bool ConfigOld_New()
+        {
+            if (low_Range[0] != textBoxCLRV.Text) return false;
+            else if (upper_Range[0] != textBoxCURV.Text) return false;
+            else if (alarm_Low[0] != textBoxCAlarmL.Text) return false;
+            else if (alarm_High[0] != textBoxCAlarmH.Text) return false;
+            else if (scan_Frequencie[0] != textBoxCFrequencie.Text) return false;
+
+            return true;
+        }
         public bool COM_Check()
         {
             comPorts = System.IO.Ports.SerialPort.GetPortNames();
@@ -378,7 +382,6 @@ namespace SoftSensConf
         public void SQL_Sensor_Data(string table, string column, string value)
         {
             string sqlQuery = string.Format("INSERT INTO {0} ({1}) VALUES ({2})", table, column, value);
-            System.Console.WriteLine("SQL_Table_Insert: " + sqlQuery);
             SqlConnection connection = new SqlConnection(connectSS_DB);
             SqlCommand command = new SqlCommand(sqlQuery, connection);
             try
@@ -393,10 +396,10 @@ namespace SoftSensConf
                 MessageBox.Show("Error in SQL_Sensor_Data: " + er);
             }
         }
+
         public void SQL_INSERT_DATA(string table, string value)
         {
-            string sqlQuery = string.Format("EXEC uspInsert{0} {1}", table, value);
-            System.Console.WriteLine("SQL_INSERT_DATA: " + sqlQuery);
+            string sqlQuery = string.Format("EXEC Insert{0} {1}", table, value);
             
             try
             {
@@ -456,11 +459,19 @@ namespace SoftSensConf
 
         public void SQL_Read_Config()
         {
+            low_Range.Clear();
+            upper_Range.Clear();
+            alarm_Low.Clear();
+            alarm_High.Clear();
+            digial_Analog.Clear();
+            inn_Out.Clear();
+            scan_Frequencie.Clear();
+
             try
             {
                 
-                string sqlQuery = "SELECT Low_Range_Value, Upper_Range_Value, Alarm_Low, Alarm_High, Digital_Analog, Inn_Out, Scan_frequencie FROM INSTRUMENT " +
-                             $"WHERE Instrument_Tag = '{comboBoxName_Tag.SelectedItem}' ORDER BY Instrument_Tag ASC";
+                string sqlQuery = "SELECT Low_Range_Value, Upper_Range_Value, Alarm_Low, Alarm_High, Digital_Analog, Scan_frequencie, Inn_Out FROM INSTRUMENT " +
+                             $"WHERE Instrument_Tag = '{name_Tag[0]}' ORDER BY Instrument_Tag ASC";
                 SqlConnection connection = new SqlConnection(connectSS_DB);
                 Console.WriteLine(sqlQuery);
                 SqlCommand command = new SqlCommand(sqlQuery, connection);
@@ -473,15 +484,26 @@ namespace SoftSensConf
                     alarm_Low.Add(dataReader[2].ToString());
                     alarm_High.Add(dataReader[3].ToString());
                     digial_Analog.Add(dataReader[4].ToString());
-                    inn_Out.Add(dataReader[5].ToString());
-                    scan_Frequencie.Add(dataReader[6].ToString());
+                    scan_Frequencie.Add(dataReader[5].ToString());
+                    inn_Out.Add(dataReader[6].ToString());
                 }
                 connection.Close();
                 textBoxLRV.Text = low_Range[0];
                 textBoxURV.Text = upper_Range[0];
                 textBoxAlarmL.Text = alarm_Low[0];
                 textBoxAlarmH.Text = alarm_High[0];
-                timerConnection.Interval = 1000 * int.Parse(scan_Frequencie[0]);
+                textBoxFrequencie.Text = scan_Frequencie[0];
+                textBoxAnalog_Digital.Text = digial_Analog[0];
+                if (scan_Frequencie[0] == "0")
+                {
+                    timerCommunication.Enabled = false;
+                    textBoxCFrequencie.Text = "OFF";
+                    textBoxFrequencie.Text = "OFF";
+                }
+                else
+                {
+                    timerCommunication.Enabled = true;
+                }
 
             }
             catch (Exception  error)
@@ -490,6 +512,28 @@ namespace SoftSensConf
                 MessageBox.Show("Error in SQL_RED_Config: " + error);
             }
             
+        }
+
+        //Writes Config values to Serial port
+        private void Write_To_DAU()
+        {
+            if (!writeconf && !readconf)
+            {
+                if (ConfigCheck())
+                {
+                    string data = ConfigMake();
+                    try
+                    {
+                        serialPort1.Write(String.Format("writeconf>{0}>{1}", configPassword, data));
+                    }
+                    catch (Exception error)
+                    {
+                        MessageBox.Show("Write Conf Error:" + error, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+
+                    writeconf = true;
+                }
+            }
         }
 
         //Closes program from strip menu 
@@ -503,8 +547,7 @@ namespace SoftSensConf
         {
 
             comPorts = System.IO.Ports.SerialPort.GetPortNames();
-            comboBoxComPort_Enter(sender, e);
-            if (comPorts.Length == 0 || comboBoxComPort.Text.Length < 4 || !COM_Check())
+            if (comPorts.Length == 0 || comboBoxComPort.Text.Length < 4 || !COM_Check() )
             {
                 string message = "";
                 string caption = "Connection unsuccessful";
@@ -514,17 +557,20 @@ namespace SoftSensConf
 
                 if (comPorts.Length == 0)
                 {
-                    message = "No COM Ports detected\nCheck Connection";  
+                    message = "No COM Ports detected\nCheck Connection";
+                }
+                else if (comboBoxDAU.SelectedIndex < 0)
+                {
+                    message = "No DAU Selected";
                 }
                 else if (!COM_Check())
                 {
-                    message = string.Format("{0} is not a valid Port",comboBoxComPort.Text);
-                    comboBoxComPort.Focus();
+                    message = string.Format("{0} is not a valid Port", comboBoxComPort.Text);
                 }
                 result = MessageBox.Show(this, message, caption, buttons, icon);
             }
 
-            else if (!serialPort1.IsOpen)
+            else if (!serialPort1.IsOpen && comboBoxDAU.SelectedIndex > -1)
             {
                 string message = "Connection established";
                 string caption = "Success";
@@ -554,50 +600,20 @@ namespace SoftSensConf
                     toolStripStatusLabelConnection.ForeColor = Color.Green;
                     toolStripProgressBarConnection.Value = 100;
                     timerConnection.Enabled = true;
-                    buttonRead.Enabled = true;
-                    buttonWrite.Enabled = true;
                     buttonConnect.Enabled = false;
                     buttonDisconnect.Enabled = true;
-                    timerSend.Enabled = true;
+                    timerCommunication.Enabled = true;
                     buttonStart.Enabled = true;
-                    
-                }
-                
+                    comboBoxMCU.Enabled = false;
+                    comboBoxRDC.Enabled = false;
+                    comboBoxDAU.Enabled = false;
+                    comboBoxBaudRate.Enabled = false;
+                    comboBoxComPort.Enabled = false;
+                    timerDataBase.Enabled = true;
+                }                
                 result = MessageBox.Show(this, message, caption, buttons, icon);
-                if (connected)
-                {
-                    buttonRead_Click(this, e);
-
-                    try
-                    {
-                        name_Tag.Clear();
-                        comboBoxName_Tag.Items.Clear();
-
-                        SqlConnection connection = new SqlConnection(connectSS_DB);
-                        string sqlQuery = $"SELECT Instrument_Tag FROM INSTRUMENT WHERE DAU_ID = {dau_ID[comboBoxDAU.SelectedIndex]} ORDER BY Instrument_Tag ASC";
-                        System.Console.WriteLine("SQL_INSTRUMENT: " + sqlQuery);
-                        SqlCommand command = new SqlCommand(sqlQuery, connection);
-                        connection.Open();
-                        SqlDataReader dataReader = command.ExecuteReader();
-
-                        while (dataReader.Read())
-                        {
-                            comboBoxName_Tag.Items.Add(dataReader[0].ToString());
-                        }
-
-                        connection.Close();
-                        if (name_Tag.Count > 0)
-                        {
-                            Console.WriteLine(name_Tag[0]);
-                            comboBoxName_Tag.Text = name_Tag[0];
-                        }
-                    }
-                    catch (Exception er)
-                    {
-                        MessageBox.Show("Error in SQL_INSTRUMENT_SELECT: " + er);
-                    }
-
-                }
+                timerDataBase_Tick(sender, e);
+                
             }
         }
 
@@ -638,79 +654,6 @@ namespace SoftSensConf
             aboutWindow.ShowDialog(this);
         }
 
-        //Saves Config to default location
-        private void toolStripMenuItemSave_Click(object sender, EventArgs e)
-        {
-            if (ConfigCheck())
-            {
-                string fileName = string.Format("{0}_Config_V{1}.ssc", textBoxName.Text, version);
-                try
-                {
-                    File.WriteAllText(fileName, ConfigMake());
-                }
-                catch (IOException)
-                {
-                    MessageBox.Show(this, "File:" + fileName + "\nIs open in another program. \nCan't write to File.", "Error",
-                                                                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-        }
-
-        //Loads Config from file
-        private void toolStripMenuItemOpen_Click(object sender, EventArgs e)
-        {
-            var fileName = string.Empty;
-            string configtxt = "";
-            string[] config = { };
-
-            openFileDialog1.InitialDirectory = "";
-            openFileDialog1.Filter = "ssc files (*.ssc)|*.ssc|All files (*.*)|*.*";
-            openFileDialog1.FilterIndex = 0;
-            openFileDialog1.RestoreDirectory = true;
-            openFileDialog1.FileName = "";
-
-            if (openFileDialog1.ShowDialog() == DialogResult.OK)
-            {
-                fileName = openFileDialog1.FileName;
-                configtxt = File.ReadAllText(fileName);
-                config = configtxt.Split(';');
-                textBoxName.Text = config[0];
-                textBoxLRV.Text = config[1];
-                textBoxURV.Text = config[2];
-                textBoxAlarmL.Text = config[3];
-                textBoxAlarmH.Text = config[4];
-            }
-                      
-        }
-
-        //Saves Config to chosen location
-        private void toolStripMenuItemSaveAs_Click(object sender, EventArgs e)
-        {
-            if (ConfigCheck())
-            {
-                saveFileDialog1.InitialDirectory = "";
-                saveFileDialog1.Filter = "ssc files (*.ssc)|*.ssc|All files (*.*)|*.*";
-                saveFileDialog1.FilterIndex = 0;
-                saveFileDialog1.RestoreDirectory = true;
-                saveFileDialog1.FileName = textBoxName.Text + "_Config_V"+version;
-
-                if (saveFileDialog1.ShowDialog() == DialogResult.OK)
-                {
-                    string fileName = saveFileDialog1.FileName;
-
-                    try
-                    {
-                        File.WriteAllText(fileName, ConfigMake());
-                    }
-                    catch (IOException)
-                    {
-                        MessageBox.Show(this, "File:" + fileName + "\nIs open in another program. \nCan't write to File.", "Error",
-                                                                                            MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
-            }
-        }
-
         //Timer to check if connection to serial port is lost
         private void timerConnection_Tick(object sender, EventArgs e)
         {
@@ -726,52 +669,57 @@ namespace SoftSensConf
 
             }
         }
-        
-        //Sends Monitoirng and Status Requests to serial port
-        private void timerSend_Tick(object sender, EventArgs e)
+        //Timer to check if config is updated
+        private void timerDataBase_Tick(object sender, EventArgs e)
         {
-            
-            if (serialPort1.IsOpen && serialPort1.BytesToRead == 0)
-            {
-                
-                if (monitorStart)
-                {
-                    if (statusCheck && statusRead)
-                    {
-                        monitor = false;
-                        monitorRead = true;
-                        statusRead = false;
-                        serialPort1.Write("readstatus");
+            SQL_Read_Config();
 
-                    }
-                    else if (monitor && monitorRead)
-                    {
-                        if (checkBoxSignalRaw.Checked)
-                        {
-                            serialPort1.Write("readraw");
-                        }
-                        else
-                        {
-                            serialPort1.Write("readscaled");
-                        }
-                        monitorRead = false;
-                    }
-                    
-                }  
+            if (!ConfigOld_New())
+            {
+                if (!monitorStart)
+                { Write_To_DAU(); }
+                else
+                { newConf = true; }
             }
-            timerSend.Enabled = false;
-            timerReceive.Enabled = true;
         }
 
-        //Recives data from Serial port
-        private void timerReceive_Tick(object sender, EventArgs e)
+        ///Sends Monitoirng and Status Requests to serial port
+        ///Recives data from Serial port       
+        private void timerCommunication_Tick(object sender, EventArgs e)
         {
+            if (send && serialPort1.IsOpen)
+            {
+                if (readconf)
+                {
+                    serialPort1.Write("readconf");
+                    send = false;
+                }
+                if (monitorStart)
+                {
+                    if (statusCheck)
+                    {
+                        serialPort1.Write("readstatus");
+                        send = false;
+                    }
+                    else if (newConf)
+                    {
+                        Write_To_DAU();
+                        newConf = false;
+                        send = false;
+                    }
+                    else if (monitor)
+                    {
+                        serialPort1.Write("readraw");
+                        send = false;
+                    }
+
+                }
             
+            }
             if (serialPort1.IsOpen && serialPort1.BytesToRead > 0)
             {
                 indata = serialPort1.ReadExisting();
-                //System.Console.Write(indata+"");
-           
+
                 if (readconf)
                 {
                     chartvalues = indata.Split(';');
@@ -789,43 +737,12 @@ namespace SoftSensConf
                         MessageBox.Show(this, "Unable to Read received Config", "Read Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     readconf = false;
+                    send = true;
                 }
-                else if (writeconf)
-                {
-                    string message = "Connection Lost!\nCheck Connection";
-                    string caption = "";
-                    MessageBoxButtons buttons = MessageBoxButtons.OK;
-                    MessageBoxIcon icon = MessageBoxIcon.Error;
-                    DialogResult result;
-
-                    int succsess = Convert.ToInt32(indata);
-
-                    if (succsess == 1)
-                    {
-                        caption = "Configuration Successful";
-                        message = "Successe Configuration updated";
-                        icon = MessageBoxIcon.Information;
-                        textBoxCName.Text = textBoxName.Text;
-                        textBoxCLRV.Text = textBoxLRV.Text;
-                        textBoxCURV.Text = textBoxURV.Text;
-                        textBoxCAlarmL.Text = textBoxAlarmL.Text;
-                        textBoxCAlarmH.Text = textBoxAlarmH.Text;
-                    }
-                    else
-                    {
-                        caption = "Configuration Failed";
-                        message = "Configuration Failed (Incorrect Password?)";
-                        icon = MessageBoxIcon.Error;
-                    }
-                    
-                    result = MessageBox.Show(this, message, caption, buttons, icon);
-                    writeconf = false;
-                }
-                else if (monitorStart)
+                if (monitorStart && !writeconf)
                 {
                     if (statusCheck)
                     {
-                        monitor = true;
                         statusVal = Convert.ToInt32(indata);
 
                         if (statusVal == 0)
@@ -843,7 +760,7 @@ namespace SoftSensConf
                             toolStripStatusLabelMStaus.ForeColor = Color.Red;
                         }
                         else if (statusVal == 2)
-                        {                            
+                        {
                             textBoxIStatus.Text = "Alarm Low";
                             textBoxIStatus.ForeColor = Color.Orange;
                             pictureBoxSignalStatus.Image = SoftSensConf.Properties.Resources.StatusWarning_16x;
@@ -862,64 +779,71 @@ namespace SoftSensConf
                             statuscheckCounter = 0;
                             statusCheck = false;
                         }
-                        statusRead = true;
-
+                        send = true; 
                     }
                     else if (monitor)
                     {
-                        //string dateNow_YMD = string.Format("{0}/{1}/{2}", DateTime.Now.Year.ToString(), DateTime.Now.Month.ToString(), DateTime.Now.Day.ToString());
-                        string timeNow = DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString() + ":" + DateTime.Now.Second.ToString();
-                        //string datetimeNow = dateNow_YMD +" "+ timeNow;
-                        
-                        if (checkBoxSignalRaw.Checked)
+                        string timeNow = DateTime.Now.Hour.ToString("##") + ":" + DateTime.Now.Minute.ToString("00") + ":" + DateTime.Now.Second.ToString("##");
+
+                        chartRaw.Series[0].Points.AddXY(timeNow, Convert.ToInt32(indata));
+                        listBoxRaw.Items.Add(indata);
+
+                        float scaled = (float.Parse(indata) * float.Parse(textBoxCURV.Text) / 1023);
+                        string i_indata = scaled.ToString("0.00");
+                        SQL_Sensor_Data("SENSOR_DATA", "Instrument_Tag", "'" + textBoxCName.Text + "'");
+                        int iD = SQL_M_ID("SENSOR_DATA", "Measurement_ID, Instrument_Tag", "Measurement_ID");
+                        if (textBoxCAnalog_Digital.Text == "Analog")
                         {
-                           
-                            chartRaw.Series[0].Points.AddXY( timeNow , Convert.ToInt32(indata));
-                            listBoxRaw.Items.Add(indata);
-                            if (!indata.Contains("\r\n"))
-                                indata = indata + "\r\n";
-                            textBoxSensorData.AppendText(indata);
-                            pointXValueRaw += 1;
+                            SQL_INSERT_DATA("ANALOG_INPUT", string.Format("{0}, {1}", iD, i_indata));
                         }
                         else
                         {
-                            int iD = 0;
-                            float i_indata = Convert.ToSingle(indata);
-                            SQL_Sensor_Data("SENSOR_DATA", "Instrument_Tag", "'" + textBoxCName.Text + "'");
-                            iD = SQL_M_ID("SENSOR_DATA", "Measurement_ID, Instrument_Tag", "Measurement_ID");
-                            SQL_INSERT_DATA("ANALOG_INPUT", string.Format("{0}, {1}", iD, i_indata));
-                            chartScaled.Series[0].Points.AddXY(timeNow, Convert.ToSingle(indata));
-                            listBoxScaled.Items.Add(indata);
-                            if (!indata.Contains("\r\n"))
-                                indata = indata + "\r\n";
-                            textBoxSensorData.AppendText(indata);
-                            pointXValueScaled += 1;
+                            SQL_INSERT_DATA("DIGITAL_INPUT", string.Format("{0}, {1}", iD, i_indata));
                         }
+                        chartScaled.Series[0].Points.AddXY(timeNow, i_indata);
+                        listBoxScaled.Items.Add(i_indata);
+
+                        if (!indata.Contains("\r\n"))
+                            indata = indata + "\r\n";
+                        textBoxSensorData.AppendText(indata);
 
                         statuscheckCounter += 1;
-                        monitorRead = true;
 
                         if (statuscheckCounter == 5)
                         {
                             statusCheck = true;
                         }
+                        send = true;
                     }
-                }    
-            }
-            if (writeconf || readconf)
-                timeout += 1;
-            if (timeout >= 4)
-            {
-                writeconf = false;
-                readconf = false;
-                timeout = 0;
-            }
-            timerSend.Enabled = true;
-            timerReceive.Enabled = false;
+                }
+                else if (writeconf)
+                {
+                    int succsess = Convert.ToInt32(indata);
 
+                    if (succsess == 1)
+                    {
+                        textBoxCName.Text = name_Tag[0];
+                        textBoxCLRV.Text = low_Range[0];
+                        textBoxCURV.Text = upper_Range[0];
+                        textBoxCAlarmL.Text = alarm_Low[0];
+                        textBoxCAlarmH.Text = alarm_High[0];
+                        textBoxCFrequencie.Text = scan_Frequencie[0];
+                        textBoxCAnalog_Digital.Text = digial_Analog[0];
+                        labelConfigTime.Text = "Config Updated: " + DateTime.Now.ToString();
+                        toolStripStatusLabelUpdateTime.Text = labelConfigTime.Text;
+                        if (int.Parse(textBoxCFrequencie.Text) <= 1000 && int.Parse(textBoxCFrequencie.Text) > 0)
+                        timerCommunication.Interval = Convert.ToInt32(1000/int.Parse(textBoxCFrequencie.Text));
+                        else timerCommunication.Interval = 1000;
+                    }
+                    else MessageBox.Show(this, "Configuration Failed", "Configuration Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    
+                    writeconf = false;
+                    send = true;
+                }
+            }
         }
 
-        private void comboBoxMCU_Enter(object sender, EventArgs e)
+        private void tabPageConnection_Enter(object sender, EventArgs e)
         {
             mcu_ID.Clear();
             mcu_Description.Clear();
@@ -943,6 +867,8 @@ namespace SoftSensConf
                 {
                     comboBoxMCU.Items.Add(id);
                 }
+                if (comboBoxMCU.Text.Length == 0 && comboBoxMCU.Items.Count > 0) { comboBoxMCU.SelectedIndex = 0; }
+
 
             }
             catch (Exception error)
@@ -951,186 +877,200 @@ namespace SoftSensConf
             }
         }
 
-        private void comboBoxRDC_Enter(object sender, EventArgs e)
-        {
-            rdc_ID.Clear();
-            rdc_Description.Clear();
-
-            try
-            {
-                if (comboBoxMCU.SelectedIndex >= 0)
-                {
-                    SqlConnection connection = new SqlConnection(connectSS_DB);
-                    string sqlQuery = "SELECT RDC_ID,Description FROM RDC WHERE MCU_ID ='" + mcu_ID[comboBoxMCU.SelectedIndex] + "' ORDER BY MCU_ID ASC";
-                    System.Console.WriteLine(sqlQuery);
-                    SqlCommand command = new SqlCommand(sqlQuery, connection);
-                    connection.Open();
-                    SqlDataReader dataReader = command.ExecuteReader();
-                    while (dataReader.Read())
-                    {
-                        rdc_ID.Add(dataReader[0].ToString());
-                        rdc_Description.Add(dataReader[1].ToString());
-                    }
-                    connection.Close();
-                    comboBoxRDC.Items.Clear();
-
-                    foreach (string id in rdc_Description)
-                    {
-                        comboBoxRDC.Items.Add(id);
-                    }
-                }
-            }
-            catch (Exception error)
-            {
-                MessageBox.Show("Error in RDC enter: " + error);
-            }
-        }
-
-        private void comboBoxDAU_Enter(object sender, EventArgs e)
-        {
-            dau_ID.Clear();
-            dau_Description.Clear();
-
-            try
-            {
-                SqlConnection connection = new SqlConnection(connectSS_DB);
-                if (comboBoxRDC.SelectedIndex >= 0)
-                {
-                    string sqlQuery = "SELECT DAU_ID,Description FROM DAU WHERE RDC_ID ='" + rdc_ID[comboBoxRDC.SelectedIndex] + "' ORDER BY DAU_ID ASC";
-                    System.Console.WriteLine(sqlQuery);
-                    SqlCommand command = new SqlCommand(sqlQuery, connection);
-                    
-                    connection.Open();
-                    SqlDataReader dataReader = command.ExecuteReader();
-                    while (dataReader.Read())
-                    {
-                        dau_ID.Add(dataReader[0].ToString());
-                        dau_Description.Add(dataReader[1].ToString());
-                    }
-
-                    connection.Close();
-                    comboBoxDAU.Items.Clear();
-                    
-                    foreach (string id in dau_Description)
-                    {
-                        comboBoxDAU.Items.Add(id);
-                    }
-                }                
-            }
-            catch (Exception error)
-            {
-                MessageBox.Show("Error in DAU enter: " + error);
-            }
-        }
-
         private void comboBoxMCU_SelectedIndexChanged(object sender, EventArgs e)
         {
-            comboBoxRDC.Text = "";
-            comboBoxDAU.Text = "";
+            if (old_MCU != comboBoxMCU.Text)
+            {
+                old_MCU = comboBoxMCU.Text;
+                rdc_ID.Clear();
+                rdc_Description.Clear();
+
+                if (comboBoxMCU.SelectedIndex >= 0 && mcu_ID.Count > 0)
+                {
+
+                    try
+                    {
+                        SqlConnection connection = new SqlConnection(connectSS_DB);
+                        string sqlQuery = "SELECT RDC_ID,Description FROM RDC WHERE MCU_ID ='" + mcu_ID[comboBoxMCU.SelectedIndex] + "' ORDER BY MCU_ID ASC";
+                        System.Console.WriteLine(sqlQuery);
+                        SqlCommand command = new SqlCommand(sqlQuery, connection);
+                        connection.Open();
+                        SqlDataReader dataReader = command.ExecuteReader();
+                        while (dataReader.Read())
+                        {
+                            rdc_ID.Add(dataReader[0].ToString());
+                            rdc_Description.Add(dataReader[1].ToString());
+                        }
+                        connection.Close();
+                        comboBoxRDC.Items.Clear();
+
+                        foreach (string id in rdc_Description)
+                        {
+                            comboBoxRDC.Items.Add(id);
+                        }
+
+                    }
+                    catch (Exception error)
+                    {
+                        MessageBox.Show("Error in RDC enter: " + error);
+                    }
+                    if (comboBoxRDC.SelectedIndex == -1 && comboBoxRDC.Items.Count > 0) { comboBoxRDC.SelectedIndex = 0; }
+                }
+                if (rdc_Description.Count == 0)
+                {
+                    comboBoxRDC.Text = "";
+                    comboBoxRDC.SelectedIndex = -1;
+                    comboBoxDAU.SelectedIndex = -1;
+                    comboBoxRDC_SelectedIndexChanged(sender, e);
+                    
+                }
+            }
+                
         }
 
         private void comboBoxRDC_SelectedIndexChanged(object sender, EventArgs e)
         {
-            comboBoxDAU.Text = "";
+            if (old_RDC != comboBoxRDC.Text)
+            {
+                old_RDC = comboBoxRDC.Text;
+                dau_ID.Clear();
+                dau_Description.Clear();
+
+                if (comboBoxRDC.SelectedIndex >= 0 && rdc_ID.Count > 0 && comboBoxRDC.Text.Length > 0)
+                {
+                    try
+                    {
+                        SqlConnection connection = new SqlConnection(connectSS_DB);
+
+
+                        string sqlQuery = "SELECT DAU_ID,Description FROM DAU WHERE RDC_ID = '" + rdc_ID[comboBoxRDC.SelectedIndex] + "' ORDER BY DAU_ID ASC";
+                        SqlCommand command = new SqlCommand(sqlQuery, connection);
+
+                        connection.Open();
+                        SqlDataReader dataReader = command.ExecuteReader();
+                        while (dataReader.Read())
+                        {
+                            dau_ID.Add(dataReader[0].ToString());
+                            dau_Description.Add(dataReader[1].ToString());
+                        }
+
+                        connection.Close();
+                        comboBoxDAU.Items.Clear();
+
+                        foreach (string id in dau_Description)
+                        {
+                            comboBoxDAU.Items.Add(id);
+                        }
+
+                    }
+                    catch (Exception error)
+                    {
+                        MessageBox.Show("Error in DAU enter: " + error);
+                    }
+                    if (comboBoxDAU.SelectedIndex == -1 && comboBoxDAU.Items.Count > 0) { comboBoxDAU.SelectedIndex = 0; }
+                }
+                if (dau_Description.Count == 0)
+                    comboBoxDAU.Text = "";
+                if (dau_ID.Count == 0)
+                {
+                    comboBoxDAU.Items.Clear();
+                    textBoxName.Clear();
+                    comboBoxDAU_SelectedIndexChanged(sender, e);
+                }
+            }
         }
 
         private void comboBoxDAU_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (comboBoxDAU.SelectedIndex >= 0 && comboBoxDAU.SelectedIndex <= dau_ID.Count && dau_ID.Count != 0)
+            if (old_DAU != comboBoxDAU.Text)
             {
-                try
+                if (comboBoxDAU.SelectedIndex >= 0 && comboBoxDAU.SelectedIndex <= dau_ID.Count && dau_ID.Count != 0)
                 {
-                    com_Port.Clear();
-                    bit_Rate.Clear();
-                    
-                    Console.WriteLine($"DAU_ID:{dau_ID[0]}\nSelected DAU Index:{comboBoxDAU.SelectedIndex}") ;
-                    SqlConnection connection = new SqlConnection(connectSS_DB);
-                    string sqlQuery = $"SELECT COM_Port, Bit_Rate FROM DAU WHERE DAU_ID = {dau_ID[comboBoxDAU.SelectedIndex]} ORDER BY COM_Port ASC";
-                    System.Console.WriteLine("SQL_DAU_SELECT: " + sqlQuery);
-                    SqlCommand command = new SqlCommand(sqlQuery, connection);
-                    connection.Open();
-                    SqlDataReader dataReader = command.ExecuteReader();
-                    int i = 0;
-                    while (dataReader.Read())
+                    try
                     {
-                        com_Port.Add(dataReader[0].ToString());
-                        bit_Rate.Add(dataReader[1].ToString());
-                        i ++;
+                        com_Port.Clear();
+                        bit_Rate.Clear();
+
+                        SqlConnection connection = new SqlConnection(connectSS_DB);
+                        string sqlQuery = $"SELECT COM_Port, Bit_Rate FROM DAU WHERE DAU_ID = {dau_ID[comboBoxDAU.SelectedIndex]} ORDER BY COM_Port ASC";
+                        SqlCommand command = new SqlCommand(sqlQuery, connection);
+                        connection.Open();
+                        SqlDataReader dataReader = command.ExecuteReader();
+
+                        while (dataReader.Read())
+                        {
+                            com_Port.Add(dataReader[0].ToString());
+                            bit_Rate.Add(dataReader[1].ToString());
+                        }
+
+                        connection.Close();
+                        if (com_Port.Count > 0 && bit_Rate.Count > 0)
+                        {
+                            comboBoxComPort.Text = com_Port[0];
+                            comboBoxBaudRate.Text = bit_Rate[0];
+                        }
+
                     }
-                    Console.WriteLine(i);
-                    connection.Close();
-                    if (com_Port.Count > 0 && bit_Rate.Count > 0)
+                    catch (Exception error)
                     {
-                        Console.WriteLine(com_Port[0]);
-                        comboBoxComPort.Text = com_Port[0];
-                        Console.WriteLine(bit_Rate[0]);
-                        comboBoxBaudRate.Text = bit_Rate[0];
+                        MessageBox.Show("Error in SQL_DAU_SELECT: " + error);
+                    }
+
+                }
+                if (comboBoxDAU.SelectedIndex <= comboBoxDAU.Items.Count && dau_ID.Count > 0 && comboBoxDAU.SelectedIndex != -1)
+                {
+                    try
+                    {
+                        name_Tag.Clear();
+                        
+
+                        SqlConnection connection = new SqlConnection(connectSS_DB);
+                        string sqlQuery = $"SELECT Instrument_Tag FROM INSTRUMENT WHERE DAU_ID = {dau_ID[comboBoxDAU.SelectedIndex]} ORDER BY Instrument_Tag ASC";
+                        SqlCommand command = new SqlCommand(sqlQuery, connection);
+                        connection.Open();
+                        SqlDataReader dataReader = command.ExecuteReader();
+
+                        while (dataReader.Read())
+                        {
+                            name_Tag.Add(dataReader[0].ToString());
+                        }
+
+                        connection.Close();
+
+                        textBoxName.Text = name_Tag[0];
+                        
+                    }
+                    catch (Exception er)
+                    {
+                        MessageBox.Show("Error in SQL_INSTRUMENT_SELECT: " + er);
                     }
                     
                 }
-                catch (Exception error)
-                {
-                    MessageBox.Show("Error in SQL_DAU_SELECT: " + error);
-                }
-                
+                old_DAU = comboBoxDAU.Text;
             }
-
-        }
-
-        private void comboBoxName_Tag_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (serialPort1.IsOpen)
+            if (comboBoxDAU.SelectedIndex == -1)
             {
-                SQL_Read_Config();
+                comboBoxComPort.Text = "";
+                comboBoxBaudRate.Text = "";
+                textBoxName.Clear();
             }
         }
 
-        private void tabPageMonitoring_Enter(object sender, EventArgs e)
+        private void textBoxName_TextChanged(object sender, EventArgs e)
         {
-            comboBoxDAU_Monitor.Text = comboBoxName_Tag.Text;
-        }
-
-        //Sends Read Config Request via the serial port
-        private void buttonRead_Click(object sender, EventArgs e)
-        {
-            if (!readconf && !writeconf)
+            if (textBoxName.Text.Length > 0)
+            { 
+                SQL_Read_Config(); 
+            }
+            else
             {
-                serialPort1.Write("readconf");
-                timeout = 0;
-                readconf = true;
+                textBoxLRV.Clear();
+                textBoxURV.Clear();
+                textBoxAlarmL.Clear();
+                textBoxAlarmH.Clear();
+                textBoxFrequencie.Clear();
+                textBoxAnalog_Digital.Clear();
             }
-        }
-
-        //Writes Config values to Serial port and saves a backup
-        private void buttonWrite_Click(object sender, EventArgs e)
-        {
-            if (!writeconf && !readconf)
-            {
-                if (ConfigCheck())
-                {
-                    string data = ConfigMake();
-                    //FormPassword passwordwindow = new FormPassword();
-                    //passwordwindow.ShowDialog(this);
-                    //if (!cancel)
-                    //{
-                        string fileName = string.Format("Backup_Config_{0}_{1}.ssc", textBoxName.Text, version);
-                        try
-                        {
-                            File.WriteAllText(fileName, data);
-                        }
-                        catch (IOException)
-                        {
-                            MessageBox.Show(this, "File:" + fileName + "\nIs open in another program. \nCan't write to File.", "Error",
-                                                                                                MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
-                        serialPort1.Write(String.Format("writeconf>{0}>{1}", configPassword, data));
-                        writeconf = true;
-                        timeout = 0;
-                    //}
-
-                }
-            }
-            
         }
 
         //Starts Monitoring
@@ -1140,15 +1080,11 @@ namespace SoftSensConf
             {
                 monitorStart = true;
                 statusCheck = true;
-                statusRead = true;
-                checkBoxSignalRaw.Enabled = false;
-                buttonWrite.Enabled = false;
-                buttonRead.Enabled = false;
                 buttonStart.Enabled = false;
                 buttonStop.Enabled = true;
-                buttonSaveData.Enabled = false;
                 toolStripStatusLabelMonitoring.Visible = true;
                 toolStripStatusLabelMStaus.Visible = true;
+                send = true;
             }
         }
 
@@ -1157,9 +1093,6 @@ namespace SoftSensConf
         {
             monitorStart = false;
             statusCheck = false;
-            checkBoxSignalRaw.Enabled = true;
-            buttonWrite.Enabled = true;
-            buttonRead.Enabled = true;
             buttonStop.Enabled = false;
             toolStripStatusLabelMonitoring.Visible = false;
             toolStripStatusLabelMStaus.Visible = false;
@@ -1170,7 +1103,7 @@ namespace SoftSensConf
             }
         }   
 
-        //Changes data Type monitored
+        //Changes view of Data Raw/Scaled
         private void checkBoxSignalRaw_CheckedChanged(object sender, EventArgs e)
         {
             if (!checkBoxSignalRaw.Checked)
@@ -1204,80 +1137,11 @@ namespace SoftSensConf
             
         }
 
-        //Loads default Config or makes one if none exists
         private void FormMain_Activated(object sender, EventArgs e)
         {
             if (!serialPort1.IsOpen)
             {
                 comboBoxMCU.Focus();
-            }
-        }
-
-        //Prevents user from entering invalid characters
-        private void textBoxLRV_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            switch (e.KeyChar)
-            {
-                
-                case '0':
-                case '1':
-                case '2':
-                case '3':
-                case '4':
-                case '5':
-                case '6':
-                case '7':
-                case '8':
-                case '9':
-                case '-':
-                case '.':
-                case ',':
-                case '\b':
-                    break;
-                default:
-                    e.Handled = true;
-                    break;
-            }
-        }
-
-        //Prevents user from entering invalid characters
-        private void textBoxAlarmL_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            switch (e.KeyChar)
-            {
-
-                case '0':
-                case '1':
-                case '2':
-                case '3':
-                case '4':
-                case '5':
-                case '6':
-                case '7':
-                case '8':
-                case '9':
-                case '-':
-                case '\b':
-                    break;
-                default:
-                    e.Handled = true;
-                    break;
-            }    
-        }
-
-        //Prevents user from entering invalid characters
-        private void textBoxName_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            switch (e.KeyChar)
-            {
-
-                case ';':
-                case '>':
-                    e.Handled = true;
-                    break;
-                default:
-                  
-                    break;
             }
         }
 
@@ -1296,130 +1160,5 @@ namespace SoftSensConf
                 }
             }
         }
-
-        //Tooltip Read online Config
-        private void buttonRead_MouseHover(object sender, EventArgs e)
-        {
-            toolTip1.AutoPopDelay = 200;
-            toolTip1.AutoPopDelay = 10000;
-            toolTip1.SetToolTip(buttonRead, "Read Config from microcontroller");
-        }
-
-        //Tooltip write Config to Device 
-        private void buttonWrite_MouseHover(object sender, EventArgs e)
-        {
-            toolTip1.AutoPopDelay = 200;
-            toolTip1.AutoPopDelay = 10000;
-            toolTip1.SetToolTip(buttonWrite, "Write Config to microcontroller");
-        }
-
-        //Tooltip Load Config from File
-        private void buttonLoad_MouseHover(object sender, EventArgs e)
-        {
-            toolTip1.AutoPopDelay = 200;
-            toolTip1.AutoPopDelay = 10000;
-            toolTip1.SetToolTip(buttonLoad, "Load config from File");
-        }
-
-        //Tooltips
-        private void buttonSave_MouseHover(object sender, EventArgs e)
-        {
-            toolTip1.AutoPopDelay = 200;
-            toolTip1.AutoPopDelay = 10000;
-            toolTip1.SetToolTip(buttonSave, "Save config to File");
-        }
-
-        //Tooltips Connect
-        private void buttonConnect_MouseHover(object sender, EventArgs e)
-        {
-            toolTip1.AutoPopDelay = 200;
-            toolTip1.AutoPopDelay = 10000;
-            toolTip1.SetToolTip(buttonConnect, "Connect to Serial Port");
-        }
-
-        //Tooltips Disconnect button
-        private void buttonDisconnect_MouseHover(object sender, EventArgs e)
-        {
-            toolTip1.AutoPopDelay = 200;
-            toolTip1.AutoPopDelay = 10000;
-            toolTip1.SetToolTip(buttonDisconnect, "Disconnect from microcontroller");
-        }
-
-        //Tooltips Start monitoring button
-        private void buttonStart_MouseHover(object sender, EventArgs e)
-        {
-            toolTip1.AutoPopDelay = 200;
-            toolTip1.AutoPopDelay = 10000;
-            toolTip1.SetToolTip(buttonStart, "Start monitoring of Data");
-        }
-
-        //Tooltips Stop monitoring
-        private void buttonStop_MouseHover(object sender, EventArgs e)
-        {
-            toolTip1.AutoPopDelay = 200;
-            toolTip1.AutoPopDelay = 10000;
-            toolTip1.SetToolTip(buttonStop, "Stop monitoring of Data");
-        }
-
-        //Tooltips Change monitoring data type
-        private void checkBoxSignalRaw_MouseHover(object sender, EventArgs e)
-        {
-            toolTip1.AutoPopDelay = 200;
-            toolTip1.AutoPopDelay = 10000;
-            toolTip1.SetToolTip(checkBoxSignalRaw, "Check to recive Raw values");
-        }
-
-        //Tooltips Save monitord data button
-        private void buttonSaveData_MouseHover(object sender, EventArgs e)
-        {
-            toolTip1.AutoPopDelay = 200;
-            toolTip1.AutoPopDelay = 10000;
-            string dataType = "Scaled";
-            if (checkBoxSignalRaw.Checked) dataType = "Raw";
-            toolTip1.SetToolTip(buttonSaveData, "Save " + dataType + " Data");
-        }
-
-        private void toolStripMenuItemDefaultConfig_Click(object sender, EventArgs e)
-        {
-            DefaultConfigSettings defaultConfigWindow = new DefaultConfigSettings();
-            defaultConfigWindow.Show(this);
-        }
-
-        private void textBoxName_MouseHover(object sender, EventArgs e)
-        {
-            toolTip1.AutoPopDelay = 200;
-            toolTip1.AutoPopDelay = 10000;
-            toolTip1.SetToolTip(textBoxName, "Enter Name of Device (Maximun 10 Characters)\n Not:(\' > \'),(\' ; \')");
-        }
-
-        private void textBoxLRV_MouseHover(object sender, EventArgs e)
-        {
-            toolTip1.AutoPopDelay = 200;
-            toolTip1.AutoPopDelay = 10000;
-            toolTip1.SetToolTip(textBoxLRV, "Enter Low Range Value (decimal numbers allowed)");
-        }
-
-        private void textBoxURV_MouseHover(object sender, EventArgs e)
-        {
-            toolTip1.AutoPopDelay = 200;
-            toolTip1.AutoPopDelay = 10000;
-            toolTip1.SetToolTip(textBoxURV, "Enter Upper Range Value (decimal numbers allowed)");
-        }
-
-        private void textBoxAlarmL_MouseHover(object sender, EventArgs e)
-        {
-            toolTip1.AutoPopDelay = 200;
-            toolTip1.AutoPopDelay = 10000;
-            toolTip1.SetToolTip(textBoxAlarmL, "Enter Alarm Low Value (Only Integers)");
-        }
-
-        private void textBoxAlarmH_MouseHover(object sender, EventArgs e)
-        {
-            toolTip1.AutoPopDelay = 200;
-            toolTip1.AutoPopDelay = 10000;
-            toolTip1.SetToolTip(textBoxAlarmH, "Enter Alarm High Value (Only Integers)");
-        }
-
-        
     }      
 }

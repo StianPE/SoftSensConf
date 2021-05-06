@@ -42,18 +42,14 @@ namespace SoftSensConf
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.toolStripMenuItemFile = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItemOpen = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItemSave = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItemSaveAs = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemExit = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItemSettings = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItemDefaultConfig = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemHelp = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabelConnection = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripProgressBarConnection = new System.Windows.Forms.ToolStripProgressBar();
+            this.toolStripStatusLabelUpdateTime = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabelMonitoring = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabelMStaus = new System.Windows.Forms.ToolStripStatusLabel();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
@@ -61,11 +57,17 @@ namespace SoftSensConf
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPageConnection = new System.Windows.Forms.TabPage();
             this.panelConfiguration = new System.Windows.Forms.Panel();
+            this.textBoxAnalog_Digital = new System.Windows.Forms.TextBox();
+            this.labelConfigTime = new System.Windows.Forms.Label();
+            this.labelAnalog_Digital = new System.Windows.Forms.Label();
+            this.labelFrequencie = new System.Windows.Forms.Label();
+            this.textBoxCAnalog_Digital = new System.Windows.Forms.TextBox();
+            this.textBoxCFrequencie = new System.Windows.Forms.TextBox();
+            this.textBoxFrequencie = new System.Windows.Forms.TextBox();
             this.labelInput = new System.Windows.Forms.Label();
             this.labelConfPanel = new System.Windows.Forms.Label();
             this.textBoxCAlarmL = new System.Windows.Forms.TextBox();
             this.textBoxName = new System.Windows.Forms.TextBox();
-            this.buttonLoad = new System.Windows.Forms.Button();
             this.textBoxLRV = new System.Windows.Forms.TextBox();
             this.textBoxCAlarmH = new System.Windows.Forms.TextBox();
             this.textBoxURV = new System.Windows.Forms.TextBox();
@@ -78,11 +80,8 @@ namespace SoftSensConf
             this.labelLRV = new System.Windows.Forms.Label();
             this.labelCurrenConfig = new System.Windows.Forms.Label();
             this.labelURV = new System.Windows.Forms.Label();
-            this.buttonWrite = new System.Windows.Forms.Button();
             this.labelAlarmL = new System.Windows.Forms.Label();
-            this.buttonSave = new System.Windows.Forms.Button();
             this.labelAlarmH = new System.Windows.Forms.Label();
-            this.buttonRead = new System.Windows.Forms.Button();
             this.panelConnection = new System.Windows.Forms.Panel();
             this.comboBoxMCU = new System.Windows.Forms.ComboBox();
             this.labelMCU = new System.Windows.Forms.Label();
@@ -100,28 +99,27 @@ namespace SoftSensConf
             this.labelBaudRate = new System.Windows.Forms.Label();
             this.labelConnection = new System.Windows.Forms.Label();
             this.tabPageMonitoring = new System.Windows.Forms.TabPage();
-            this.comboBoxDAU_Monitor = new System.Windows.Forms.ComboBox();
-            this.buttonSaveData = new System.Windows.Forms.Button();
-            this.chartScaled = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            this.labelIStatus = new System.Windows.Forms.Label();
-            this.textBoxIStatus = new System.Windows.Forms.TextBox();
-            this.labelScaled = new System.Windows.Forms.Label();
-            this.labelRaw = new System.Windows.Forms.Label();
-            this.pictureBoxSignalStatus = new System.Windows.Forms.PictureBox();
-            this.listBoxScaled = new System.Windows.Forms.ListBox();
-            this.listBoxRaw = new System.Windows.Forms.ListBox();
-            this.labelSensorData = new System.Windows.Forms.Label();
-            this.textBoxSensorData = new System.Windows.Forms.TextBox();
-            this.checkBoxSignalRaw = new System.Windows.Forms.CheckBox();
+            this.panelMonitring = new System.Windows.Forms.Panel();
             this.buttonStop = new System.Windows.Forms.Button();
+            this.pictureBoxSignalStatus = new System.Windows.Forms.PictureBox();
             this.buttonStart = new System.Windows.Forms.Button();
+            this.checkBoxSignalRaw = new System.Windows.Forms.CheckBox();
+            this.labelIStatus = new System.Windows.Forms.Label();
+            this.textBoxSensorData = new System.Windows.Forms.TextBox();
+            this.textBoxIStatus = new System.Windows.Forms.TextBox();
+            this.labelSensorData = new System.Windows.Forms.Label();
+            this.labelScaled = new System.Windows.Forms.Label();
+            this.listBoxRaw = new System.Windows.Forms.ListBox();
+            this.labelRaw = new System.Windows.Forms.Label();
+            this.listBoxScaled = new System.Windows.Forms.ListBox();
+            this.chartScaled = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.chartRaw = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
             this.timerConnection = new System.Windows.Forms.Timer(this.components);
-            this.timerSend = new System.Windows.Forms.Timer(this.components);
-            this.timerReceive = new System.Windows.Forms.Timer(this.components);
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.comboBoxName_Tag = new System.Windows.Forms.ComboBox();
+            this.timerDataBase = new System.Windows.Forms.Timer(this.components);
+            this.timerCommunication = new System.Windows.Forms.Timer(this.components);
+            this.labelMonitoring = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -129,8 +127,9 @@ namespace SoftSensConf
             this.panelConfiguration.SuspendLayout();
             this.panelConnection.SuspendLayout();
             this.tabPageMonitoring.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.chartScaled)).BeginInit();
+            this.panelMonitring.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxSignalStatus)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chartScaled)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartRaw)).BeginInit();
             this.SuspendLayout();
             // 
@@ -138,7 +137,6 @@ namespace SoftSensConf
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItemFile,
-            this.toolStripMenuItemSettings,
             this.toolStripMenuItemHelp});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
@@ -149,62 +147,17 @@ namespace SoftSensConf
             // toolStripMenuItemFile
             // 
             this.toolStripMenuItemFile.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripMenuItemOpen,
-            this.toolStripMenuItemSave,
-            this.toolStripMenuItemSaveAs,
             this.toolStripMenuItemExit});
             this.toolStripMenuItemFile.Name = "toolStripMenuItemFile";
             this.toolStripMenuItemFile.Size = new System.Drawing.Size(37, 20);
             this.toolStripMenuItemFile.Text = "&File";
             // 
-            // toolStripMenuItemOpen
-            // 
-            this.toolStripMenuItemOpen.Enabled = false;
-            this.toolStripMenuItemOpen.Name = "toolStripMenuItemOpen";
-            this.toolStripMenuItemOpen.Size = new System.Drawing.Size(162, 22);
-            this.toolStripMenuItemOpen.Text = "&Load Config";
-            this.toolStripMenuItemOpen.Visible = false;
-            this.toolStripMenuItemOpen.Click += new System.EventHandler(this.toolStripMenuItemOpen_Click);
-            // 
-            // toolStripMenuItemSave
-            // 
-            this.toolStripMenuItemSave.Enabled = false;
-            this.toolStripMenuItemSave.Name = "toolStripMenuItemSave";
-            this.toolStripMenuItemSave.Size = new System.Drawing.Size(162, 22);
-            this.toolStripMenuItemSave.Text = "&Save Config";
-            this.toolStripMenuItemSave.Visible = false;
-            this.toolStripMenuItemSave.Click += new System.EventHandler(this.toolStripMenuItemSave_Click);
-            // 
-            // toolStripMenuItemSaveAs
-            // 
-            this.toolStripMenuItemSaveAs.Enabled = false;
-            this.toolStripMenuItemSaveAs.Name = "toolStripMenuItemSaveAs";
-            this.toolStripMenuItemSaveAs.Size = new System.Drawing.Size(162, 22);
-            this.toolStripMenuItemSaveAs.Text = "Save Config &As...";
-            this.toolStripMenuItemSaveAs.Visible = false;
-            this.toolStripMenuItemSaveAs.Click += new System.EventHandler(this.toolStripMenuItemSaveAs_Click);
-            // 
             // toolStripMenuItemExit
             // 
             this.toolStripMenuItemExit.Name = "toolStripMenuItemExit";
-            this.toolStripMenuItemExit.Size = new System.Drawing.Size(162, 22);
+            this.toolStripMenuItemExit.Size = new System.Drawing.Size(180, 22);
             this.toolStripMenuItemExit.Text = "E&xit";
             this.toolStripMenuItemExit.Click += new System.EventHandler(this.toolStripMenuItemExit_Click);
-            // 
-            // toolStripMenuItemSettings
-            // 
-            this.toolStripMenuItemSettings.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripMenuItemDefaultConfig});
-            this.toolStripMenuItemSettings.Name = "toolStripMenuItemSettings";
-            this.toolStripMenuItemSettings.Size = new System.Drawing.Size(61, 20);
-            this.toolStripMenuItemSettings.Text = "Se&ttings";
-            // 
-            // toolStripMenuItemDefaultConfig
-            // 
-            this.toolStripMenuItemDefaultConfig.Name = "toolStripMenuItemDefaultConfig";
-            this.toolStripMenuItemDefaultConfig.Size = new System.Drawing.Size(195, 22);
-            this.toolStripMenuItemDefaultConfig.Text = "Change &Default Config";
-            this.toolStripMenuItemDefaultConfig.Click += new System.EventHandler(this.toolStripMenuItemDefaultConfig_Click);
             // 
             // toolStripMenuItemHelp
             // 
@@ -227,6 +180,7 @@ namespace SoftSensConf
             this.toolStripStatusLabel1,
             this.toolStripStatusLabelConnection,
             this.toolStripProgressBarConnection,
+            this.toolStripStatusLabelUpdateTime,
             this.toolStripStatusLabelMonitoring,
             this.toolStripStatusLabelMStaus});
             this.statusStrip1.Location = new System.Drawing.Point(0, 431);
@@ -251,6 +205,12 @@ namespace SoftSensConf
             // 
             this.toolStripProgressBarConnection.Name = "toolStripProgressBarConnection";
             this.toolStripProgressBarConnection.Size = new System.Drawing.Size(100, 16);
+            // 
+            // toolStripStatusLabelUpdateTime
+            // 
+            this.toolStripStatusLabelUpdateTime.Name = "toolStripStatusLabelUpdateTime";
+            this.toolStripStatusLabelUpdateTime.Size = new System.Drawing.Size(97, 17);
+            this.toolStripStatusLabelUpdateTime.Text = "Config Updated: ";
             // 
             // toolStripStatusLabelMonitoring
             // 
@@ -293,17 +253,23 @@ namespace SoftSensConf
             this.tabPageConnection.TabIndex = 0;
             this.tabPageConnection.Text = "Connection & Configuration";
             this.tabPageConnection.UseVisualStyleBackColor = true;
+            this.tabPageConnection.Enter += new System.EventHandler(this.tabPageConnection_Enter);
             // 
             // panelConfiguration
             // 
             this.panelConfiguration.BackColor = System.Drawing.Color.WhiteSmoke;
             this.panelConfiguration.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelConfiguration.Controls.Add(this.comboBoxName_Tag);
+            this.panelConfiguration.Controls.Add(this.textBoxAnalog_Digital);
+            this.panelConfiguration.Controls.Add(this.labelConfigTime);
+            this.panelConfiguration.Controls.Add(this.labelAnalog_Digital);
+            this.panelConfiguration.Controls.Add(this.labelFrequencie);
+            this.panelConfiguration.Controls.Add(this.textBoxCAnalog_Digital);
+            this.panelConfiguration.Controls.Add(this.textBoxCFrequencie);
+            this.panelConfiguration.Controls.Add(this.textBoxFrequencie);
             this.panelConfiguration.Controls.Add(this.labelInput);
             this.panelConfiguration.Controls.Add(this.labelConfPanel);
             this.panelConfiguration.Controls.Add(this.textBoxCAlarmL);
             this.panelConfiguration.Controls.Add(this.textBoxName);
-            this.panelConfiguration.Controls.Add(this.buttonLoad);
             this.panelConfiguration.Controls.Add(this.textBoxLRV);
             this.panelConfiguration.Controls.Add(this.textBoxCAlarmH);
             this.panelConfiguration.Controls.Add(this.textBoxURV);
@@ -316,20 +282,83 @@ namespace SoftSensConf
             this.panelConfiguration.Controls.Add(this.labelLRV);
             this.panelConfiguration.Controls.Add(this.labelCurrenConfig);
             this.panelConfiguration.Controls.Add(this.labelURV);
-            this.panelConfiguration.Controls.Add(this.buttonWrite);
             this.panelConfiguration.Controls.Add(this.labelAlarmL);
-            this.panelConfiguration.Controls.Add(this.buttonSave);
             this.panelConfiguration.Controls.Add(this.labelAlarmH);
-            this.panelConfiguration.Controls.Add(this.buttonRead);
-            this.panelConfiguration.Location = new System.Drawing.Point(350, 6);
+            this.panelConfiguration.Location = new System.Drawing.Point(355, 6);
             this.panelConfiguration.Name = "panelConfiguration";
-            this.panelConfiguration.Size = new System.Drawing.Size(380, 363);
+            this.panelConfiguration.Size = new System.Drawing.Size(394, 363);
             this.panelConfiguration.TabIndex = 45;
+            // 
+            // textBoxAnalog_Digital
+            // 
+            this.textBoxAnalog_Digital.Location = new System.Drawing.Point(268, 243);
+            this.textBoxAnalog_Digital.Name = "textBoxAnalog_Digital";
+            this.textBoxAnalog_Digital.ReadOnly = true;
+            this.textBoxAnalog_Digital.Size = new System.Drawing.Size(100, 20);
+            this.textBoxAnalog_Digital.TabIndex = 54;
+            this.textBoxAnalog_Digital.TabStop = false;
+            this.textBoxAnalog_Digital.Visible = false;
+            // 
+            // labelConfigTime
+            // 
+            this.labelConfigTime.AutoSize = true;
+            this.labelConfigTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelConfigTime.Location = new System.Drawing.Point(12, 285);
+            this.labelConfigTime.Name = "labelConfigTime";
+            this.labelConfigTime.Size = new System.Drawing.Size(110, 15);
+            this.labelConfigTime.TabIndex = 53;
+            this.labelConfigTime.Text = "Config Updated:";
+            // 
+            // labelAnalog_Digital
+            // 
+            this.labelAnalog_Digital.AutoSize = true;
+            this.labelAnalog_Digital.Location = new System.Drawing.Point(12, 246);
+            this.labelAnalog_Digital.Name = "labelAnalog_Digital";
+            this.labelAnalog_Digital.Size = new System.Drawing.Size(74, 13);
+            this.labelAnalog_Digital.TabIndex = 51;
+            this.labelAnalog_Digital.Text = "Analog/Digital";
+            this.labelAnalog_Digital.Visible = false;
+            // 
+            // labelFrequencie
+            // 
+            this.labelFrequencie.AutoSize = true;
+            this.labelFrequencie.Location = new System.Drawing.Point(12, 220);
+            this.labelFrequencie.Name = "labelFrequencie";
+            this.labelFrequencie.Size = new System.Drawing.Size(101, 13);
+            this.labelFrequencie.TabIndex = 50;
+            this.labelFrequencie.Text = "Logging Frequencie";
+            // 
+            // textBoxCAnalog_Digital
+            // 
+            this.textBoxCAnalog_Digital.Location = new System.Drawing.Point(162, 243);
+            this.textBoxCAnalog_Digital.Name = "textBoxCAnalog_Digital";
+            this.textBoxCAnalog_Digital.ReadOnly = true;
+            this.textBoxCAnalog_Digital.Size = new System.Drawing.Size(100, 20);
+            this.textBoxCAnalog_Digital.TabIndex = 49;
+            this.textBoxCAnalog_Digital.TabStop = false;
+            this.textBoxCAnalog_Digital.Visible = false;
+            // 
+            // textBoxCFrequencie
+            // 
+            this.textBoxCFrequencie.Location = new System.Drawing.Point(161, 217);
+            this.textBoxCFrequencie.Name = "textBoxCFrequencie";
+            this.textBoxCFrequencie.ReadOnly = true;
+            this.textBoxCFrequencie.Size = new System.Drawing.Size(100, 20);
+            this.textBoxCFrequencie.TabIndex = 47;
+            this.textBoxCFrequencie.TabStop = false;
+            // 
+            // textBoxFrequencie
+            // 
+            this.textBoxFrequencie.Location = new System.Drawing.Point(268, 217);
+            this.textBoxFrequencie.Name = "textBoxFrequencie";
+            this.textBoxFrequencie.ReadOnly = true;
+            this.textBoxFrequencie.Size = new System.Drawing.Size(100, 20);
+            this.textBoxFrequencie.TabIndex = 46;
             // 
             // labelInput
             // 
             this.labelInput.AutoSize = true;
-            this.labelInput.Location = new System.Drawing.Point(233, 71);
+            this.labelInput.Location = new System.Drawing.Point(267, 71);
             this.labelInput.Name = "labelInput";
             this.labelInput.Size = new System.Drawing.Size(67, 13);
             this.labelInput.TabIndex = 44;
@@ -347,7 +376,7 @@ namespace SoftSensConf
             // 
             // textBoxCAlarmL
             // 
-            this.textBoxCAlarmL.Location = new System.Drawing.Point(128, 165);
+            this.textBoxCAlarmL.Location = new System.Drawing.Point(162, 165);
             this.textBoxCAlarmL.Name = "textBoxCAlarmL";
             this.textBoxCAlarmL.ReadOnly = true;
             this.textBoxCAlarmL.Size = new System.Drawing.Size(100, 20);
@@ -356,40 +385,24 @@ namespace SoftSensConf
             // 
             // textBoxName
             // 
-            this.textBoxName.Location = new System.Drawing.Point(234, 87);
+            this.textBoxName.Location = new System.Drawing.Point(268, 87);
             this.textBoxName.Name = "textBoxName";
+            this.textBoxName.ReadOnly = true;
             this.textBoxName.Size = new System.Drawing.Size(100, 20);
             this.textBoxName.TabIndex = 24;
-            this.textBoxName.Text = "C385IT001";
-            this.textBoxName.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxName_KeyPress);
-            this.textBoxName.MouseHover += new System.EventHandler(this.textBoxName_MouseHover);
-            // 
-            // buttonLoad
-            // 
-            this.buttonLoad.Enabled = false;
-            this.buttonLoad.Location = new System.Drawing.Point(234, 217);
-            this.buttonLoad.Name = "buttonLoad";
-            this.buttonLoad.Size = new System.Drawing.Size(100, 23);
-            this.buttonLoad.TabIndex = 32;
-            this.buttonLoad.Text = "&Load";
-            this.buttonLoad.UseVisualStyleBackColor = true;
-            this.buttonLoad.Visible = false;
-            this.buttonLoad.Click += new System.EventHandler(this.toolStripMenuItemOpen_Click);
-            this.buttonLoad.MouseHover += new System.EventHandler(this.buttonLoad_MouseHover);
+            this.textBoxName.TextChanged += new System.EventHandler(this.textBoxName_TextChanged);
             // 
             // textBoxLRV
             // 
-            this.textBoxLRV.Location = new System.Drawing.Point(234, 113);
+            this.textBoxLRV.Location = new System.Drawing.Point(268, 113);
             this.textBoxLRV.Name = "textBoxLRV";
+            this.textBoxLRV.ReadOnly = true;
             this.textBoxLRV.Size = new System.Drawing.Size(100, 20);
             this.textBoxLRV.TabIndex = 25;
-            this.textBoxLRV.Text = "0.0";
-            this.textBoxLRV.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxLRV_KeyPress);
-            this.textBoxLRV.MouseHover += new System.EventHandler(this.textBoxLRV_MouseHover);
             // 
             // textBoxCAlarmH
             // 
-            this.textBoxCAlarmH.Location = new System.Drawing.Point(128, 191);
+            this.textBoxCAlarmH.Location = new System.Drawing.Point(162, 191);
             this.textBoxCAlarmH.Name = "textBoxCAlarmH";
             this.textBoxCAlarmH.ReadOnly = true;
             this.textBoxCAlarmH.Size = new System.Drawing.Size(100, 20);
@@ -398,27 +411,23 @@ namespace SoftSensConf
             // 
             // textBoxURV
             // 
-            this.textBoxURV.Location = new System.Drawing.Point(234, 139);
+            this.textBoxURV.Location = new System.Drawing.Point(268, 139);
             this.textBoxURV.Name = "textBoxURV";
+            this.textBoxURV.ReadOnly = true;
             this.textBoxURV.Size = new System.Drawing.Size(100, 20);
             this.textBoxURV.TabIndex = 26;
-            this.textBoxURV.Text = "500.0";
-            this.textBoxURV.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxLRV_KeyPress);
-            this.textBoxURV.MouseHover += new System.EventHandler(this.textBoxURV_MouseHover);
             // 
             // textBoxAlarmL
             // 
-            this.textBoxAlarmL.Location = new System.Drawing.Point(234, 165);
+            this.textBoxAlarmL.Location = new System.Drawing.Point(268, 165);
             this.textBoxAlarmL.Name = "textBoxAlarmL";
+            this.textBoxAlarmL.ReadOnly = true;
             this.textBoxAlarmL.Size = new System.Drawing.Size(100, 20);
             this.textBoxAlarmL.TabIndex = 27;
-            this.textBoxAlarmL.Text = "40";
-            this.textBoxAlarmL.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxAlarmL_KeyPress);
-            this.textBoxAlarmL.MouseHover += new System.EventHandler(this.textBoxAlarmL_MouseHover);
             // 
             // textBoxCURV
             // 
-            this.textBoxCURV.Location = new System.Drawing.Point(128, 139);
+            this.textBoxCURV.Location = new System.Drawing.Point(162, 139);
             this.textBoxCURV.Name = "textBoxCURV";
             this.textBoxCURV.ReadOnly = true;
             this.textBoxCURV.Size = new System.Drawing.Size(100, 20);
@@ -427,17 +436,15 @@ namespace SoftSensConf
             // 
             // textBoxAlarmH
             // 
-            this.textBoxAlarmH.Location = new System.Drawing.Point(234, 191);
+            this.textBoxAlarmH.Location = new System.Drawing.Point(268, 191);
             this.textBoxAlarmH.Name = "textBoxAlarmH";
+            this.textBoxAlarmH.ReadOnly = true;
             this.textBoxAlarmH.Size = new System.Drawing.Size(100, 20);
             this.textBoxAlarmH.TabIndex = 28;
-            this.textBoxAlarmH.Text = "440";
-            this.textBoxAlarmH.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxAlarmL_KeyPress);
-            this.textBoxAlarmH.MouseHover += new System.EventHandler(this.textBoxAlarmH_MouseHover);
             // 
             // textBoxCLRV
             // 
-            this.textBoxCLRV.Location = new System.Drawing.Point(128, 113);
+            this.textBoxCLRV.Location = new System.Drawing.Point(162, 113);
             this.textBoxCLRV.Name = "textBoxCLRV";
             this.textBoxCLRV.ReadOnly = true;
             this.textBoxCLRV.Size = new System.Drawing.Size(100, 20);
@@ -455,7 +462,7 @@ namespace SoftSensConf
             // 
             // textBoxCName
             // 
-            this.textBoxCName.Location = new System.Drawing.Point(128, 87);
+            this.textBoxCName.Location = new System.Drawing.Point(162, 87);
             this.textBoxCName.Name = "textBoxCName";
             this.textBoxCName.ReadOnly = true;
             this.textBoxCName.Size = new System.Drawing.Size(100, 20);
@@ -474,7 +481,7 @@ namespace SoftSensConf
             // labelCurrenConfig
             // 
             this.labelCurrenConfig.AutoSize = true;
-            this.labelCurrenConfig.Location = new System.Drawing.Point(125, 71);
+            this.labelCurrenConfig.Location = new System.Drawing.Point(159, 71);
             this.labelCurrenConfig.Name = "labelCurrenConfig";
             this.labelCurrenConfig.Size = new System.Drawing.Size(102, 13);
             this.labelCurrenConfig.TabIndex = 38;
@@ -489,18 +496,6 @@ namespace SoftSensConf
             this.labelURV.TabIndex = 34;
             this.labelURV.Text = "Upper Range Value";
             // 
-            // buttonWrite
-            // 
-            this.buttonWrite.Enabled = false;
-            this.buttonWrite.Location = new System.Drawing.Point(128, 246);
-            this.buttonWrite.Name = "buttonWrite";
-            this.buttonWrite.Size = new System.Drawing.Size(100, 23);
-            this.buttonWrite.TabIndex = 33;
-            this.buttonWrite.Text = "&Write";
-            this.buttonWrite.UseVisualStyleBackColor = true;
-            this.buttonWrite.Click += new System.EventHandler(this.buttonWrite_Click);
-            this.buttonWrite.MouseHover += new System.EventHandler(this.buttonWrite_MouseHover);
-            // 
             // labelAlarmL
             // 
             this.labelAlarmL.AutoSize = true;
@@ -510,19 +505,6 @@ namespace SoftSensConf
             this.labelAlarmL.TabIndex = 36;
             this.labelAlarmL.Text = "Alarm Low";
             // 
-            // buttonSave
-            // 
-            this.buttonSave.Enabled = false;
-            this.buttonSave.Location = new System.Drawing.Point(234, 246);
-            this.buttonSave.Name = "buttonSave";
-            this.buttonSave.Size = new System.Drawing.Size(100, 23);
-            this.buttonSave.TabIndex = 35;
-            this.buttonSave.Text = "&Save";
-            this.buttonSave.UseVisualStyleBackColor = true;
-            this.buttonSave.Visible = false;
-            this.buttonSave.Click += new System.EventHandler(this.toolStripMenuItemSaveAs_Click);
-            this.buttonSave.MouseHover += new System.EventHandler(this.buttonSave_MouseHover);
-            // 
             // labelAlarmH
             // 
             this.labelAlarmH.AutoSize = true;
@@ -531,18 +513,6 @@ namespace SoftSensConf
             this.labelAlarmH.Size = new System.Drawing.Size(58, 13);
             this.labelAlarmH.TabIndex = 37;
             this.labelAlarmH.Text = "Alarm High";
-            // 
-            // buttonRead
-            // 
-            this.buttonRead.Enabled = false;
-            this.buttonRead.Location = new System.Drawing.Point(128, 217);
-            this.buttonRead.Name = "buttonRead";
-            this.buttonRead.Size = new System.Drawing.Size(100, 23);
-            this.buttonRead.TabIndex = 30;
-            this.buttonRead.Text = "&Read";
-            this.buttonRead.UseVisualStyleBackColor = true;
-            this.buttonRead.Click += new System.EventHandler(this.buttonRead_Click);
-            this.buttonRead.MouseHover += new System.EventHandler(this.buttonRead_MouseHover);
             // 
             // panelConnection
             // 
@@ -565,7 +535,7 @@ namespace SoftSensConf
             this.panelConnection.Controls.Add(this.labelConnection);
             this.panelConnection.Location = new System.Drawing.Point(47, 6);
             this.panelConnection.Name = "panelConnection";
-            this.panelConnection.Size = new System.Drawing.Size(236, 366);
+            this.panelConnection.Size = new System.Drawing.Size(244, 366);
             this.panelConnection.TabIndex = 44;
             // 
             // comboBoxMCU
@@ -576,7 +546,6 @@ namespace SoftSensConf
             this.comboBoxMCU.Size = new System.Drawing.Size(121, 21);
             this.comboBoxMCU.TabIndex = 13;
             this.comboBoxMCU.SelectedIndexChanged += new System.EventHandler(this.comboBoxMCU_SelectedIndexChanged);
-            this.comboBoxMCU.Enter += new System.EventHandler(this.comboBoxMCU_Enter);
             // 
             // labelMCU
             // 
@@ -612,8 +581,8 @@ namespace SoftSensConf
             this.comboBoxDAU.Name = "comboBoxDAU";
             this.comboBoxDAU.Size = new System.Drawing.Size(121, 21);
             this.comboBoxDAU.TabIndex = 9;
+            this.toolTip1.SetToolTip(this.comboBoxDAU, "Select DAU");
             this.comboBoxDAU.SelectedIndexChanged += new System.EventHandler(this.comboBoxDAU_SelectedIndexChanged);
-            this.comboBoxDAU.Enter += new System.EventHandler(this.comboBoxDAU_Enter);
             // 
             // comboBoxRDC
             // 
@@ -623,7 +592,6 @@ namespace SoftSensConf
             this.comboBoxRDC.Size = new System.Drawing.Size(121, 21);
             this.comboBoxRDC.TabIndex = 8;
             this.comboBoxRDC.SelectedIndexChanged += new System.EventHandler(this.comboBoxRDC_SelectedIndexChanged);
-            this.comboBoxRDC.Enter += new System.EventHandler(this.comboBoxRDC_Enter);
             // 
             // labelConPanel
             // 
@@ -652,6 +620,7 @@ namespace SoftSensConf
             this.comboBoxComPort.Name = "comboBoxComPort";
             this.comboBoxComPort.Size = new System.Drawing.Size(121, 21);
             this.comboBoxComPort.TabIndex = 0;
+            this.comboBoxComPort.TabStop = false;
             this.comboBoxComPort.Enter += new System.EventHandler(this.comboBoxComPort_Enter);
             // 
             // comboBoxBaudRate
@@ -673,8 +642,8 @@ namespace SoftSensConf
             this.comboBoxBaudRate.Name = "comboBoxBaudRate";
             this.comboBoxBaudRate.Size = new System.Drawing.Size(121, 21);
             this.comboBoxBaudRate.TabIndex = 1;
+            this.comboBoxBaudRate.TabStop = false;
             this.comboBoxBaudRate.Text = "9600";
-            this.comboBoxBaudRate.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxAlarmL_KeyPress);
             // 
             // buttonConnect
             // 
@@ -683,9 +652,9 @@ namespace SoftSensConf
             this.buttonConnect.Size = new System.Drawing.Size(75, 23);
             this.buttonConnect.TabIndex = 2;
             this.buttonConnect.Text = "&Connect";
+            this.toolTip1.SetToolTip(this.buttonConnect, "Connect to Serial Port");
             this.buttonConnect.UseVisualStyleBackColor = true;
             this.buttonConnect.Click += new System.EventHandler(this.buttonConnect_Click);
-            this.buttonConnect.MouseHover += new System.EventHandler(this.buttonConnect_MouseHover);
             // 
             // buttonDisconnect
             // 
@@ -695,9 +664,9 @@ namespace SoftSensConf
             this.buttonDisconnect.Size = new System.Drawing.Size(75, 23);
             this.buttonDisconnect.TabIndex = 3;
             this.buttonDisconnect.Text = "&Disconnect";
+            this.toolTip1.SetToolTip(this.buttonDisconnect, "Disconnect from microcontroller");
             this.buttonDisconnect.UseVisualStyleBackColor = true;
             this.buttonDisconnect.Click += new System.EventHandler(this.buttonDisconnect_Click);
-            this.buttonDisconnect.MouseHover += new System.EventHandler(this.buttonDisconnect_MouseHover);
             // 
             // labelComPort
             // 
@@ -728,21 +697,8 @@ namespace SoftSensConf
             // 
             // tabPageMonitoring
             // 
-            this.tabPageMonitoring.Controls.Add(this.comboBoxDAU_Monitor);
-            this.tabPageMonitoring.Controls.Add(this.buttonSaveData);
+            this.tabPageMonitoring.Controls.Add(this.panelMonitring);
             this.tabPageMonitoring.Controls.Add(this.chartScaled);
-            this.tabPageMonitoring.Controls.Add(this.labelIStatus);
-            this.tabPageMonitoring.Controls.Add(this.textBoxIStatus);
-            this.tabPageMonitoring.Controls.Add(this.labelScaled);
-            this.tabPageMonitoring.Controls.Add(this.labelRaw);
-            this.tabPageMonitoring.Controls.Add(this.pictureBoxSignalStatus);
-            this.tabPageMonitoring.Controls.Add(this.listBoxScaled);
-            this.tabPageMonitoring.Controls.Add(this.listBoxRaw);
-            this.tabPageMonitoring.Controls.Add(this.labelSensorData);
-            this.tabPageMonitoring.Controls.Add(this.textBoxSensorData);
-            this.tabPageMonitoring.Controls.Add(this.checkBoxSignalRaw);
-            this.tabPageMonitoring.Controls.Add(this.buttonStop);
-            this.tabPageMonitoring.Controls.Add(this.buttonStart);
             this.tabPageMonitoring.Controls.Add(this.chartRaw);
             this.tabPageMonitoring.Location = new System.Drawing.Point(4, 22);
             this.tabPageMonitoring.Name = "tabPageMonitoring";
@@ -750,136 +706,89 @@ namespace SoftSensConf
             this.tabPageMonitoring.TabIndex = 2;
             this.tabPageMonitoring.Text = "Monitoring";
             this.tabPageMonitoring.UseVisualStyleBackColor = true;
-            this.tabPageMonitoring.Enter += new System.EventHandler(this.tabPageMonitoring_Enter);
             // 
-            // comboBoxDAU_Monitor
+            // panelMonitring
             // 
-            this.comboBoxDAU_Monitor.FormattingEnabled = true;
-            this.comboBoxDAU_Monitor.Location = new System.Drawing.Point(3, 17);
-            this.comboBoxDAU_Monitor.Name = "comboBoxDAU_Monitor";
-            this.comboBoxDAU_Monitor.Size = new System.Drawing.Size(121, 21);
-            this.comboBoxDAU_Monitor.TabIndex = 18;
+            this.panelMonitring.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.panelMonitring.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelMonitring.Controls.Add(this.labelMonitoring);
+            this.panelMonitring.Controls.Add(this.buttonStop);
+            this.panelMonitring.Controls.Add(this.pictureBoxSignalStatus);
+            this.panelMonitring.Controls.Add(this.buttonStart);
+            this.panelMonitring.Controls.Add(this.checkBoxSignalRaw);
+            this.panelMonitring.Controls.Add(this.labelIStatus);
+            this.panelMonitring.Controls.Add(this.textBoxSensorData);
+            this.panelMonitring.Controls.Add(this.textBoxIStatus);
+            this.panelMonitring.Controls.Add(this.labelSensorData);
+            this.panelMonitring.Controls.Add(this.labelScaled);
+            this.panelMonitring.Controls.Add(this.listBoxRaw);
+            this.panelMonitring.Controls.Add(this.labelRaw);
+            this.panelMonitring.Controls.Add(this.listBoxScaled);
+            this.panelMonitring.Dock = System.Windows.Forms.DockStyle.Left;
+            this.panelMonitring.Location = new System.Drawing.Point(0, 0);
+            this.panelMonitring.Name = "panelMonitring";
+            this.panelMonitring.Size = new System.Drawing.Size(151, 381);
+            this.panelMonitring.TabIndex = 18;
             // 
-            // buttonSaveData
+            // buttonStop
             // 
-            this.buttonSaveData.Enabled = false;
-            this.buttonSaveData.Location = new System.Drawing.Point(3, 354);
-            this.buttonSaveData.Name = "buttonSaveData";
-            this.buttonSaveData.Size = new System.Drawing.Size(121, 23);
-            this.buttonSaveData.TabIndex = 17;
-            this.buttonSaveData.Text = "Save";
-            this.buttonSaveData.UseVisualStyleBackColor = true;
-            this.buttonSaveData.Visible = false;
-            this.buttonSaveData.Click += new System.EventHandler(this.buttonSaveData_Click);
-            this.buttonSaveData.MouseHover += new System.EventHandler(this.buttonSaveData_MouseHover);
-            // 
-            // chartScaled
-            // 
-            chartArea1.AxisX.Title = "Time";
-            chartArea1.AxisY.Title = "Lux";
-            chartArea1.Name = "ChartArea1";
-            this.chartScaled.ChartAreas.Add(chartArea1);
-            this.chartScaled.Enabled = false;
-            legend1.Name = "Legend1";
-            this.chartScaled.Legends.Add(legend1);
-            this.chartScaled.Location = new System.Drawing.Point(133, 44);
-            this.chartScaled.Name = "chartScaled";
-            series1.ChartArea = "ChartArea1";
-            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series1.Legend = "Legend1";
-            series1.LegendText = "Scaled";
-            series1.Name = "Scaled";
-            this.chartScaled.Series.Add(series1);
-            this.chartScaled.Size = new System.Drawing.Size(663, 337);
-            this.chartScaled.TabIndex = 15;
-            this.chartScaled.TabStop = false;
-            this.chartScaled.Text = "chart2";
-            title1.Name = "TitleScaled";
-            title1.Text = "Scaled Sensor Data";
-            this.chartScaled.Titles.Add(title1);
-            // 
-            // labelIStatus
-            // 
-            this.labelIStatus.AutoSize = true;
-            this.labelIStatus.Location = new System.Drawing.Point(5, 119);
-            this.labelIStatus.Name = "labelIStatus";
-            this.labelIStatus.Size = new System.Drawing.Size(95, 13);
-            this.labelIStatus.TabIndex = 14;
-            this.labelIStatus.Text = "Instrument Status :";
-            // 
-            // textBoxIStatus
-            // 
-            this.textBoxIStatus.BackColor = System.Drawing.SystemColors.Window;
-            this.textBoxIStatus.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.textBoxIStatus.Location = new System.Drawing.Point(3, 135);
-            this.textBoxIStatus.Name = "textBoxIStatus";
-            this.textBoxIStatus.ReadOnly = true;
-            this.textBoxIStatus.Size = new System.Drawing.Size(121, 20);
-            this.textBoxIStatus.TabIndex = 13;
-            this.textBoxIStatus.TabStop = false;
-            this.textBoxIStatus.Text = "-";
-            // 
-            // labelScaled
-            // 
-            this.labelScaled.AutoSize = true;
-            this.labelScaled.Location = new System.Drawing.Point(5, 224);
-            this.labelScaled.Name = "labelScaled";
-            this.labelScaled.Size = new System.Drawing.Size(40, 13);
-            this.labelScaled.TabIndex = 9;
-            this.labelScaled.Text = "Scaled";
-            // 
-            // labelRaw
-            // 
-            this.labelRaw.AutoSize = true;
-            this.labelRaw.Location = new System.Drawing.Point(5, 224);
-            this.labelRaw.Name = "labelRaw";
-            this.labelRaw.Size = new System.Drawing.Size(29, 13);
-            this.labelRaw.TabIndex = 8;
-            this.labelRaw.Text = "Raw";
-            this.labelRaw.Visible = false;
+            this.buttonStop.Enabled = false;
+            this.buttonStop.Location = new System.Drawing.Point(13, 62);
+            this.buttonStop.Name = "buttonStop";
+            this.buttonStop.Size = new System.Drawing.Size(121, 23);
+            this.buttonStop.TabIndex = 2;
+            this.buttonStop.Text = "Stop";
+            this.toolTip1.SetToolTip(this.buttonStop, "Stop monitoring");
+            this.buttonStop.UseVisualStyleBackColor = true;
+            this.buttonStop.Click += new System.EventHandler(this.buttonStop_Click);
             // 
             // pictureBoxSignalStatus
             // 
             this.pictureBoxSignalStatus.ErrorImage = global::SoftSensConf.Properties.Resources.StatusCriticalError_16x;
             this.pictureBoxSignalStatus.Image = global::SoftSensConf.Properties.Resources.StatusOffline_16x;
             this.pictureBoxSignalStatus.InitialImage = global::SoftSensConf.Properties.Resources.StatusOK_16x;
-            this.pictureBoxSignalStatus.Location = new System.Drawing.Point(106, 119);
+            this.pictureBoxSignalStatus.Location = new System.Drawing.Point(113, 138);
             this.pictureBoxSignalStatus.Name = "pictureBoxSignalStatus";
             this.pictureBoxSignalStatus.Size = new System.Drawing.Size(21, 16);
             this.pictureBoxSignalStatus.TabIndex = 16;
             this.pictureBoxSignalStatus.TabStop = false;
             // 
-            // listBoxScaled
+            // buttonStart
             // 
-            this.listBoxScaled.FormattingEnabled = true;
-            this.listBoxScaled.Location = new System.Drawing.Point(3, 240);
-            this.listBoxScaled.Name = "listBoxScaled";
-            this.listBoxScaled.Size = new System.Drawing.Size(121, 108);
-            this.listBoxScaled.TabIndex = 7;
-            this.listBoxScaled.TabStop = false;
+            this.buttonStart.Enabled = false;
+            this.buttonStart.Location = new System.Drawing.Point(13, 33);
+            this.buttonStart.Name = "buttonStart";
+            this.buttonStart.Size = new System.Drawing.Size(121, 23);
+            this.buttonStart.TabIndex = 1;
+            this.buttonStart.Text = "Start ";
+            this.toolTip1.SetToolTip(this.buttonStart, "Start monitoring");
+            this.buttonStart.UseVisualStyleBackColor = true;
+            this.buttonStart.Click += new System.EventHandler(this.buttonStart_Click);
             // 
-            // listBoxRaw
+            // checkBoxSignalRaw
             // 
-            this.listBoxRaw.FormattingEnabled = true;
-            this.listBoxRaw.Location = new System.Drawing.Point(3, 240);
-            this.listBoxRaw.Name = "listBoxRaw";
-            this.listBoxRaw.Size = new System.Drawing.Size(121, 108);
-            this.listBoxRaw.TabIndex = 6;
-            this.listBoxRaw.TabStop = false;
-            this.listBoxRaw.Visible = false;
+            this.checkBoxSignalRaw.AutoSize = true;
+            this.checkBoxSignalRaw.Location = new System.Drawing.Point(13, 91);
+            this.checkBoxSignalRaw.Name = "checkBoxSignalRaw";
+            this.checkBoxSignalRaw.Size = new System.Drawing.Size(116, 17);
+            this.checkBoxSignalRaw.TabIndex = 3;
+            this.checkBoxSignalRaw.Text = "Raw Sensor Signal";
+            this.toolTip1.SetToolTip(this.checkBoxSignalRaw, "Check to view Raw values");
+            this.checkBoxSignalRaw.UseVisualStyleBackColor = true;
+            this.checkBoxSignalRaw.CheckedChanged += new System.EventHandler(this.checkBoxSignalRaw_CheckedChanged);
             // 
-            // labelSensorData
+            // labelIStatus
             // 
-            this.labelSensorData.AutoSize = true;
-            this.labelSensorData.Location = new System.Drawing.Point(3, 158);
-            this.labelSensorData.Name = "labelSensorData";
-            this.labelSensorData.Size = new System.Drawing.Size(64, 13);
-            this.labelSensorData.TabIndex = 5;
-            this.labelSensorData.Text = "Sensor data";
+            this.labelIStatus.AutoSize = true;
+            this.labelIStatus.Location = new System.Drawing.Point(13, 138);
+            this.labelIStatus.Name = "labelIStatus";
+            this.labelIStatus.Size = new System.Drawing.Size(95, 13);
+            this.labelIStatus.TabIndex = 14;
+            this.labelIStatus.Text = "Instrument Status :";
             // 
             // textBoxSensorData
             // 
-            this.textBoxSensorData.Location = new System.Drawing.Point(3, 174);
+            this.textBoxSensorData.Location = new System.Drawing.Point(13, 193);
             this.textBoxSensorData.Multiline = true;
             this.textBoxSensorData.Name = "textBoxSensorData";
             this.textBoxSensorData.ReadOnly = true;
@@ -888,41 +797,90 @@ namespace SoftSensConf
             this.textBoxSensorData.TabIndex = 4;
             this.textBoxSensorData.TabStop = false;
             // 
-            // checkBoxSignalRaw
+            // textBoxIStatus
             // 
-            this.checkBoxSignalRaw.AutoSize = true;
-            this.checkBoxSignalRaw.Location = new System.Drawing.Point(3, 102);
-            this.checkBoxSignalRaw.Name = "checkBoxSignalRaw";
-            this.checkBoxSignalRaw.Size = new System.Drawing.Size(116, 17);
-            this.checkBoxSignalRaw.TabIndex = 3;
-            this.checkBoxSignalRaw.Text = "Raw Sensor Signal";
-            this.checkBoxSignalRaw.UseVisualStyleBackColor = true;
-            this.checkBoxSignalRaw.CheckedChanged += new System.EventHandler(this.checkBoxSignalRaw_CheckedChanged);
-            this.checkBoxSignalRaw.MouseHover += new System.EventHandler(this.checkBoxSignalRaw_MouseHover);
+            this.textBoxIStatus.BackColor = System.Drawing.SystemColors.Window;
+            this.textBoxIStatus.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.textBoxIStatus.Location = new System.Drawing.Point(13, 154);
+            this.textBoxIStatus.Name = "textBoxIStatus";
+            this.textBoxIStatus.ReadOnly = true;
+            this.textBoxIStatus.Size = new System.Drawing.Size(121, 20);
+            this.textBoxIStatus.TabIndex = 13;
+            this.textBoxIStatus.TabStop = false;
+            this.textBoxIStatus.Text = "-";
             // 
-            // buttonStop
+            // labelSensorData
             // 
-            this.buttonStop.Enabled = false;
-            this.buttonStop.Location = new System.Drawing.Point(3, 73);
-            this.buttonStop.Name = "buttonStop";
-            this.buttonStop.Size = new System.Drawing.Size(121, 23);
-            this.buttonStop.TabIndex = 2;
-            this.buttonStop.Text = "Stop";
-            this.buttonStop.UseVisualStyleBackColor = true;
-            this.buttonStop.Click += new System.EventHandler(this.buttonStop_Click);
-            this.buttonStop.MouseHover += new System.EventHandler(this.buttonStop_MouseHover);
+            this.labelSensorData.AutoSize = true;
+            this.labelSensorData.Location = new System.Drawing.Point(13, 177);
+            this.labelSensorData.Name = "labelSensorData";
+            this.labelSensorData.Size = new System.Drawing.Size(64, 13);
+            this.labelSensorData.TabIndex = 5;
+            this.labelSensorData.Text = "Sensor data";
             // 
-            // buttonStart
+            // labelScaled
             // 
-            this.buttonStart.Enabled = false;
-            this.buttonStart.Location = new System.Drawing.Point(3, 44);
-            this.buttonStart.Name = "buttonStart";
-            this.buttonStart.Size = new System.Drawing.Size(121, 23);
-            this.buttonStart.TabIndex = 1;
-            this.buttonStart.Text = "Start ";
-            this.buttonStart.UseVisualStyleBackColor = true;
-            this.buttonStart.Click += new System.EventHandler(this.buttonStart_Click);
-            this.buttonStart.MouseHover += new System.EventHandler(this.buttonStart_MouseHover);
+            this.labelScaled.AutoSize = true;
+            this.labelScaled.Location = new System.Drawing.Point(13, 243);
+            this.labelScaled.Name = "labelScaled";
+            this.labelScaled.Size = new System.Drawing.Size(40, 13);
+            this.labelScaled.TabIndex = 9;
+            this.labelScaled.Text = "Scaled";
+            // 
+            // listBoxRaw
+            // 
+            this.listBoxRaw.FormattingEnabled = true;
+            this.listBoxRaw.Location = new System.Drawing.Point(13, 259);
+            this.listBoxRaw.Name = "listBoxRaw";
+            this.listBoxRaw.Size = new System.Drawing.Size(121, 108);
+            this.listBoxRaw.TabIndex = 6;
+            this.listBoxRaw.TabStop = false;
+            this.listBoxRaw.Visible = false;
+            // 
+            // labelRaw
+            // 
+            this.labelRaw.AutoSize = true;
+            this.labelRaw.Location = new System.Drawing.Point(15, 243);
+            this.labelRaw.Name = "labelRaw";
+            this.labelRaw.Size = new System.Drawing.Size(29, 13);
+            this.labelRaw.TabIndex = 8;
+            this.labelRaw.Text = "Raw";
+            this.labelRaw.Visible = false;
+            // 
+            // listBoxScaled
+            // 
+            this.listBoxScaled.FormattingEnabled = true;
+            this.listBoxScaled.Location = new System.Drawing.Point(13, 259);
+            this.listBoxScaled.Name = "listBoxScaled";
+            this.listBoxScaled.Size = new System.Drawing.Size(121, 108);
+            this.listBoxScaled.TabIndex = 7;
+            this.listBoxScaled.TabStop = false;
+            // 
+            // chartScaled
+            // 
+            chartArea1.AxisX.Title = "Time";
+            chartArea1.AxisY.Title = "Lux";
+            chartArea1.Name = "ChartArea1";
+            this.chartScaled.ChartAreas.Add(chartArea1);
+            this.chartScaled.Dock = System.Windows.Forms.DockStyle.Right;
+            this.chartScaled.Enabled = false;
+            legend1.Name = "Legend1";
+            this.chartScaled.Legends.Add(legend1);
+            this.chartScaled.Location = new System.Drawing.Point(-510, 0);
+            this.chartScaled.Name = "chartScaled";
+            series1.ChartArea = "ChartArea1";
+            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series1.Legend = "Legend1";
+            series1.LegendText = "Scaled";
+            series1.Name = "Scaled";
+            this.chartScaled.Series.Add(series1);
+            this.chartScaled.Size = new System.Drawing.Size(651, 381);
+            this.chartScaled.TabIndex = 15;
+            this.chartScaled.TabStop = false;
+            this.chartScaled.Text = "chart2";
+            title1.Name = "TitleScaled";
+            title1.Text = "Scaled Sensor Data";
+            this.chartScaled.Titles.Add(title1);
             // 
             // chartRaw
             // 
@@ -930,9 +888,10 @@ namespace SoftSensConf
             chartArea2.AxisY.Title = "Raw Data";
             chartArea2.Name = "ChartArea1";
             this.chartRaw.ChartAreas.Add(chartArea2);
+            this.chartRaw.Dock = System.Windows.Forms.DockStyle.Right;
             legend2.Name = "Legend1";
             this.chartRaw.Legends.Add(legend2);
-            this.chartRaw.Location = new System.Drawing.Point(133, 44);
+            this.chartRaw.Location = new System.Drawing.Point(141, 0);
             this.chartRaw.Name = "chartRaw";
             series2.ChartArea = "ChartArea1";
             series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
@@ -945,7 +904,7 @@ namespace SoftSensConf
             series3.Name = "Scaled";
             this.chartRaw.Series.Add(series2);
             this.chartRaw.Series.Add(series3);
-            this.chartRaw.Size = new System.Drawing.Size(659, 337);
+            this.chartRaw.Size = new System.Drawing.Size(651, 381);
             this.chartRaw.TabIndex = 0;
             this.chartRaw.TabStop = false;
             this.chartRaw.Text = "chart1";
@@ -959,24 +918,26 @@ namespace SoftSensConf
             this.timerConnection.Interval = 1000;
             this.timerConnection.Tick += new System.EventHandler(this.timerConnection_Tick);
             // 
-            // timerSend
+            // timerDataBase
             // 
-            this.timerSend.Interval = 300;
-            this.timerSend.Tick += new System.EventHandler(this.timerSend_Tick);
+            this.timerDataBase.Interval = 5000;
+            this.timerDataBase.Tick += new System.EventHandler(this.timerDataBase_Tick);
             // 
-            // timerReceive
+            // timerCommunication
             // 
-            this.timerReceive.Interval = 700;
-            this.timerReceive.Tick += new System.EventHandler(this.timerReceive_Tick);
+            this.timerCommunication.Interval = 1000;
+            this.timerCommunication.Tick += new System.EventHandler(this.timerCommunication_Tick);
             // 
-            // comboBoxName_Tag
+            // labelMonitoring
             // 
-            this.comboBoxName_Tag.FormattingEnabled = true;
-            this.comboBoxName_Tag.Location = new System.Drawing.Point(234, 86);
-            this.comboBoxName_Tag.Name = "comboBoxName_Tag";
-            this.comboBoxName_Tag.Size = new System.Drawing.Size(100, 21);
-            this.comboBoxName_Tag.TabIndex = 45;
-            this.comboBoxName_Tag.SelectedIndexChanged += new System.EventHandler(this.comboBoxName_Tag_SelectedIndexChanged);
+            this.labelMonitoring.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.labelMonitoring.AutoSize = true;
+            this.labelMonitoring.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelMonitoring.Location = new System.Drawing.Point(7, 6);
+            this.labelMonitoring.Name = "labelMonitoring";
+            this.labelMonitoring.Size = new System.Drawing.Size(88, 18);
+            this.labelMonitoring.TabIndex = 17;
+            this.labelMonitoring.Text = "Monitoring";
             // 
             // FormMain
             // 
@@ -989,7 +950,7 @@ namespace SoftSensConf
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(816, 492);
+            this.MaximumSize = new System.Drawing.Size(1600, 900);
             this.MinimumSize = new System.Drawing.Size(816, 492);
             this.Name = "FormMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -1007,9 +968,10 @@ namespace SoftSensConf
             this.panelConnection.ResumeLayout(false);
             this.panelConnection.PerformLayout();
             this.tabPageMonitoring.ResumeLayout(false);
-            this.tabPageMonitoring.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.chartScaled)).EndInit();
+            this.panelMonitring.ResumeLayout(false);
+            this.panelMonitring.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxSignalStatus)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chartScaled)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartRaw)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -1020,9 +982,6 @@ namespace SoftSensConf
 
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemFile;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemOpen;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemSave;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemSaveAs;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemExit;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemHelp;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemAbout;
@@ -1035,8 +994,6 @@ namespace SoftSensConf
         private System.Windows.Forms.TabPage tabPageConnection;
         private System.IO.Ports.SerialPort serialPort1;
         private System.Windows.Forms.Timer timerConnection;
-        private System.Windows.Forms.Timer timerSend;
-        private System.Windows.Forms.Timer timerReceive;
         private System.Windows.Forms.TabPage tabPageMonitoring;
         private System.Windows.Forms.Label labelSensorData;
         private System.Windows.Forms.TextBox textBoxSensorData;
@@ -1054,7 +1011,6 @@ namespace SoftSensConf
         private System.Windows.Forms.Label labelConfPanel;
         private System.Windows.Forms.TextBox textBoxCAlarmL;
         private System.Windows.Forms.TextBox textBoxName;
-        private System.Windows.Forms.Button buttonLoad;
         private System.Windows.Forms.TextBox textBoxLRV;
         private System.Windows.Forms.TextBox textBoxCAlarmH;
         private System.Windows.Forms.TextBox textBoxURV;
@@ -1067,11 +1023,8 @@ namespace SoftSensConf
         private System.Windows.Forms.Label labelLRV;
         private System.Windows.Forms.Label labelCurrenConfig;
         private System.Windows.Forms.Label labelURV;
-        private System.Windows.Forms.Button buttonWrite;
         private System.Windows.Forms.Label labelAlarmL;
-        private System.Windows.Forms.Button buttonSave;
         private System.Windows.Forms.Label labelAlarmH;
-        private System.Windows.Forms.Button buttonRead;
         private System.Windows.Forms.Panel panelConnection;
         private System.Windows.Forms.Label labelConPanel;
         private System.Windows.Forms.TextBox textBoxConnection;
@@ -1086,20 +1039,27 @@ namespace SoftSensConf
         private System.Windows.Forms.DataVisualization.Charting.Chart chartScaled;
         private System.Windows.Forms.PictureBox pictureBoxSignalStatus;
         private System.Windows.Forms.ToolTip toolTip1;
-        private System.Windows.Forms.Button buttonSaveData;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemSettings;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemDefaultConfig;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelMonitoring;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelMStaus;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelConnection;
-        private System.Windows.Forms.ComboBox comboBoxDAU_Monitor;
         private System.Windows.Forms.Label label_DAU;
         private System.Windows.Forms.Label label_RDC;
         private System.Windows.Forms.ComboBox comboBoxDAU;
         private System.Windows.Forms.ComboBox comboBoxRDC;
         private System.Windows.Forms.Label labelMCU;
         private System.Windows.Forms.ComboBox comboBoxMCU;
-        private System.Windows.Forms.ComboBox comboBoxName_Tag;
+        private System.Windows.Forms.Timer timerDataBase;
+        private System.Windows.Forms.Label labelAnalog_Digital;
+        private System.Windows.Forms.Label labelFrequencie;
+        private System.Windows.Forms.TextBox textBoxCAnalog_Digital;
+        private System.Windows.Forms.TextBox textBoxCFrequencie;
+        private System.Windows.Forms.TextBox textBoxFrequencie;
+        private System.Windows.Forms.Label labelConfigTime;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelUpdateTime;
+        private System.Windows.Forms.Panel panelMonitring;
+        private System.Windows.Forms.Timer timerCommunication;
+        private System.Windows.Forms.TextBox textBoxAnalog_Digital;
+        private System.Windows.Forms.Label labelMonitoring;
     }
 }
 
